@@ -1,11 +1,20 @@
 import { ImageResponse } from "next/og";
 export async function GET() {
-  const currentDate = new Date().toLocaleDateString("zh-TW");
-  const currentTime = new Date().toLocaleTimeString("zh-TW", {
+  const date = new Date();
+  const currentDate = date.toLocaleDateString("zh-TW");
+  const currentTime = date.toLocaleTimeString("zh-TW", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
   });
+  const greeting =
+    date.getHours() < 6
+      ? "晚安！"
+      : date.getHours() < 12
+        ? "早安！"
+        : date.getHours() < 18
+          ? "午安！"
+          : "晚安！";
   return new ImageResponse(
     (
       <div
@@ -31,40 +40,21 @@ export async function GET() {
             </div>
           </div>
         </div>
-        <div tw="flex w-full flex-1 flex-col items-center justify-center">
-          <div tw="flex w-full flex-col justify-between p-8 px-4 py-12 md:flex-row md:items-center">
-            <h2 tw="flex text-left text-6xl font-bold tracking-tight text-gray-900">
-              <span>早安！</span>
-              <span tw="opacity-50">勝勝</span>
-            </h2>
-            <div tw="mt-8 flex md:mt-0">
-              <div tw="flex rounded-md shadow">
-                <a
-                  href="#"
-                  tw="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-5 py-3 text-base font-medium text-white"
-                >
-                  Get started
-                </a>
-              </div>
-              <div tw="ml-3 flex rounded-md shadow">
-                <a
-                  href="#"
-                  tw="flex items-center justify-center rounded-md border border-transparent bg-white px-5 py-3 text-base font-medium text-indigo-600"
-                >
-                  Learn more
-                </a>{" "}
-                <img
-                  width="256"
-                  height="256"
-                  src={`/djungelskog.png`}
-                  style={{
-                    borderRadius: 128,
-                  }}
-                />
-              </div>
-            </div>
+
+        <div tw="flex w-full flex-1 items-center justify-between">
+          <h2 tw="flex text-left text-6xl font-bold tracking-tight text-gray-900">
+            <span>{greeting}</span>
+            <span tw="opacity-50">勝勝</span>
+          </h2>
+          <div tw="flex">
+            <img
+              width="256"
+              height="220"
+              src="https://skog-einvoice.gnehs.net/djungelskog.png"
+            />
           </div>
         </div>
+
         <div tw="mb-2 flex w-full items-center justify-between rounded-md border-2 border-gray-200 p-2">
           <div tw="flex text-4xl"> ☁️ 多雲</div>
           <div tw="flex flex-col items-end">
@@ -83,31 +73,46 @@ export async function GET() {
                 <div tw="text-4xl font-bold"> 255</div>
                 <div tw="ml-1">W</div>
               </div>
-              <div tw="mr-2 flex flex-col rounded bg-gray-200 px-2">
-                <div tw="opacity-50">衣櫃上</div>
-                <div tw="text-2xl">1W</div>
+            </div>
+            <div tw="mt-2 flex">
+              <div tw="flex w-[31.5%] flex-col rounded bg-gray-200 px-2 py-1">
+                <div tw="flex items-end text-2xl">
+                  1<div tw="ml-1 text-base opacity-50">W</div>
+                </div>
+                <div tw="text-base opacity-50">衣櫃上</div>
               </div>
-              <div tw="mr-2 flex flex-col rounded bg-gray-200 px-2">
-                <div tw="opacity-50">衣櫃下</div>
-                <div tw="text-2xl">3W</div>
+              <div tw="mx-2 flex w-[31.5%] flex-col rounded bg-gray-200 px-2 py-1">
+                <div tw="flex items-end text-2xl">
+                  3<div tw="ml-1 text-base opacity-50">W</div>
+                </div>
+                <div tw="text-base opacity-50">衣櫃下</div>
               </div>
-              <div tw="mr-2 flex flex-col rounded bg-gray-200 px-2">
-                <div tw="opacity-50">書桌</div>
-                <div tw="text-2xl">111W</div>
+              <div tw="flex w-[31.5%] flex-col rounded bg-gray-200 px-2 py-1">
+                <div tw="flex items-end text-2xl">
+                  111
+                  <div tw="ml-1 text-base opacity-50">W</div>
+                </div>
+                <div tw="text-base opacity-50">書桌</div>
               </div>
             </div>
-            <div tw="mt-2 flex"></div>
           </div>
           <div tw="flex w-[32.5%] flex-col rounded-md bg-gray-100 p-2 shadow">
             <div tw="flex justify-between">
               <div>BTC</div>
-              <div>💰</div>
+              <div>−0.37%</div>
             </div>
             <div tw="flex items-end">
-              <div tw="text-4xl font-bold"> 95,372</div>
-              <div tw="ml-1">USD </div>
+              <div tw="text-4xl font-bold">95,372</div>
+              <div tw="ml-1 opacity-50">USD</div>
             </div>
-            <div>−0.37%</div>
+            <div tw="mt-1 flex justify-between">
+              <div>JPY/TWD</div>
+              <div>−0.09%</div>
+            </div>
+            <div tw="flex items-end">
+              <div tw="text-4xl font-bold">0.213</div>
+              <div tw="ml-1 opacity-50">TWD</div>
+            </div>
           </div>
           <div tw="flex w-[32.5%] flex-col rounded-md bg-gray-100 p-2 shadow">
             <div tw="flex justify-between">
@@ -116,10 +121,23 @@ export async function GET() {
             </div>
             <div tw="flex items-end">
               <div tw="text-4xl font-bold">4,321</div>
-              <div tw="ml-1">步</div>
+              <div tw="ml-1 opacity-50">步</div>
             </div>
-            <div tw="mt-1 flex">
-              <div tw="mr-1 rounded bg-gray-200 px-1">七日平均 6,532 步</div>
+            <div tw="mt-2 flex">
+              <div tw="flex flex-col rounded bg-gray-200 px-2 py-1">
+                <div tw="flex items-end text-2xl">
+                  6,532
+                  <div tw="ml-1 text-base opacity-50">步</div>
+                </div>
+                <div tw="text-base opacity-50">7 日平均</div>
+              </div>
+              <div tw="ml-2 flex flex-col rounded bg-gray-200 px-2 py-1">
+                <div tw="flex items-end text-2xl">
+                  5,962
+                  <div tw="ml-1 text-base opacity-50">步</div>
+                </div>
+                <div tw="text-base opacity-50">30 日平均</div>
+              </div>
             </div>
           </div>
         </div>
@@ -128,7 +146,7 @@ export async function GET() {
     {
       width: 960,
       height: 540,
-      emoji: "fluentFlat",
+      emoji: "blobmoji",
     },
   );
 }
