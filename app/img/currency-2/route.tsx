@@ -131,7 +131,7 @@ function MiniCurrencyCard({
 }) {
   return (
     <div tw="flex w-full items-center">
-      <div tw="h-[80%] w-2 rounded-full bg-black opacity-10" />
+      <div tw="h-[80%] w-2 rounded-full bg-black/10" />
       <div
         tw="flex w-full justify-between p-2"
         style={{
@@ -166,7 +166,7 @@ function CurrencyCard({
 }) {
   return (
     <div tw="flex w-full items-center">
-      <div tw="h-[80%] w-2 rounded-full bg-black opacity-10" />
+      <div tw="h-[80%] w-2 rounded-full bg-black/10" />
       <div
         tw="flex w-full flex-col p-2"
         style={{

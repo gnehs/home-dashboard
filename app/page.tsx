@@ -76,8 +76,8 @@ function Card({
   }, []);
   return (
     <div className="rounded border border-gray-200 p-4">
-      <div className="group relative w-[480px] border-2 border-dashed border-gray-200">
-        <div className="absolute right-2 top-2 z-10 rounded bg-gray-200/50 p-2 opacity-0 backdrop-blur-md transition-opacity group-hover:opacity-100">
+      <div className="group relative w-[480px] border-2 border-dashed border-gray-200 bg-gray-300">
+        <div className="absolute bottom-2 left-0 right-0 z-10 m-auto h-max w-max origin-bottom scale-0 rounded border border-gray-200 bg-white p-1 px-3 opacity-0 shadow-sm transition-all group-hover:scale-100 group-hover:opacity-100">
           <a
             href={currentBaseURL}
             target="_blank"
@@ -87,7 +87,11 @@ function Card({
             {currentBaseURL}
           </a>
         </div>
-        <img src={url} alt={title} className="min-h-[270px] w-full grayscale" />
+        <img
+          src={url}
+          alt={title}
+          className="min-h-[270px] w-full grayscale transition-opacity group-hover:opacity-90"
+        />
       </div>
       <div className="mt-2 text-xl font-bold text-gray-900">{title}</div>
       <div className="text-gray-600">{description}</div>
