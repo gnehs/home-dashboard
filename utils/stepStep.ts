@@ -1,6 +1,19 @@
 import { z } from "zod";
 
 // Types for StepStep API responses
+const UserResponse = z.object({
+  id: z.string(),
+  name: z.string(),
+});
+
+const RankResponse = z.array(
+  z.object({
+    steps: z.number(),
+    distance: z.number(),
+    energy: z.number(),
+    user: UserResponse,
+  }),
+);
 
 const HourlyData = z.record(
   z.string(),
@@ -86,13 +99,23 @@ export class StepStep {
   }
 
   /**
+   * Get rank data for a specific date
+   * @param date Date in YYYY-MM-DD format
+   */
+  async getRank(date: string) {
+    const data = await this.request<z.infer<typeof RankResponse>>(
+      `/rank?date=${date}`,
+    );
+    return RankResponse.parse(data);
+  }
+
+  /**
    * Get analytics data
    */
   async getAnalytics() {
     const data = await this.request<z.infer<typeof AnalyticsResponse>>(
       `/analytics?token=${this.token}`,
     );
-    console.log(data);
     return AnalyticsResponse.parse(data);
   }
 }

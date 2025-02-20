@@ -9,6 +9,14 @@ export default function Home() {
         />
       </div>
       <div className="mt-1 text-xl">Home Dashboard - 1</div>
+      <div className="w-[480px] border-2 border-gray-200">
+        <img
+          src="/img/demo"
+          alt="board-1"
+          className="min-h-[270px] w-full grayscale"
+        />
+      </div>
+      <div className="mt-1 text-xl">Demo - 1</div>
     </div>
   );
 }

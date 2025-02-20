@@ -47,8 +47,6 @@ export async function GET() {
     stepStep.getAnalytics(),
   ]);
 
-  console.log(analyticsData.data.last30dByDay);
-
   const greeting =
     date.getHours() < 6
       ? "晚安！"
