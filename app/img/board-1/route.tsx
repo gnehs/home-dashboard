@@ -1,11 +1,16 @@
 import { ImageResponse } from "next/og";
 import { HomeAssistant } from "@/utils/homeAssistant";
-
+import { StepStep } from "@/utils/stepStep";
 // 創建實例
 const ha = new HomeAssistant(
   process.env.HOME_ASSISTANT_HOST!, // Home Assistant 的網址
   process.env.HOME_ASSISTANT_TOKEN!, // 你的 Access Token
 );
+const stepStep = new StepStep(
+  process.env.STEPSTEP_HOST!, // StepStep 的網址
+  process.env.STEPSTEP_TOKEN!, // 你的 Access Token
+);
+
 export async function GET() {
   const date = new Date();
   const currentDate = date.toLocaleDateString("zh-TW", {
@@ -29,6 +34,7 @@ export async function GET() {
     closetPowerStateUpper,
     closetPowerStateDown,
     playerState,
+    analyticsData,
   ] = await Promise.all([
     ha.getState("sensor.ble_temperature_gnehs_temp"),
     ha.getState("sensor.ble_humidity_gnehs_temp"),
@@ -38,8 +44,10 @@ export async function GET() {
     ha.getState("sensor.tasmota_energy_power"),
     ha.getState("sensor.tasmota_energy_power_5"),
     ha.getState("media_player.mi_mao_mi_mao"),
+    stepStep.getAnalytics(),
   ]);
-  console.log();
+
+  console.log(analyticsData.data.last30dByDay);
 
   const greeting =
     date.getHours() < 6
@@ -170,18 +178,32 @@ export async function GET() {
           </div>
           <div tw="flex w-[32.5%] flex-col rounded-md bg-gray-100 p-2 shadow">
             <div tw="flex justify-between">
-              <div>步數</div>
+              <div>餅餅踏踏</div>
               <div>🚶</div>
             </div>
             <div tw="flex items-end">
-              <div tw="text-4xl font-bold">
-                {parseInt("11111").toLocaleString()}
+              <div tw="flex text-4xl font-bold">
+                {"steps" in analyticsData.data.last30dByDay[0]
+                  ? analyticsData.data.last30dByDay[0].steps.toLocaleString()
+                  : 0}
               </div>
               <div tw="ml-1 opacity-50">步</div>
             </div>
             <div tw="mt-2 flex">
-              <MiniCard title="7 日平均" value={6_532} unit="步" />
-              <MiniCard title="30 日平均" value={5_962} unit="步" />
+              <MiniCard
+                title="距離"
+                value={
+                  "distance" in analyticsData.data.last30dByDay[0]
+                    ? analyticsData.data.last30dByDay[0].distance
+                    : 0
+                }
+                unit="公里"
+              />
+              <MiniCard
+                title="月均步數"
+                value={analyticsData.data.aggregate._avg.steps * 24}
+                unit="步"
+              />
             </div>
           </div>
         </div>
@@ -207,7 +229,7 @@ function MiniCard({
   return (
     <div tw="mr-2 flex flex-col rounded bg-white px-3 py-1 shadow">
       <div tw="flex items-end text-2xl">
-        {value.toLocaleString()}
+        {value.toLocaleString("zh-TW", { maximumFractionDigits: 1 })}
         <div tw="ml-1 text-base opacity-50">{unit}</div>
       </div>
       <div tw="text-base opacity-50">{title}</div>
