@@ -8,6 +8,9 @@ import Error from "@/app/components/Error";
 const botBank = new BotBank();
 const cryptoCompare = new CryptoCompare();
 
+const IMG_WIDTH = 960;
+const IMG_HEIGHT = 540;
+
 export async function GET() {
   try {
     const date = new Date();
@@ -44,8 +47,12 @@ export async function GET() {
     return new ImageResponse(
       (
         <div
-          tw="flex h-[540px] w-[960px] flex-col bg-white p-2 text-xl"
+          tw="flex flex-col bg-white p-2 text-xl"
           lang="zh-TW"
+          style={{
+            width: IMG_WIDTH,
+            height: IMG_HEIGHT,
+          }}
         >
           <div tw="flex w-full items-center justify-between">
             <div tw="flex">
@@ -131,16 +138,12 @@ export async function GET() {
           </div>
         </div>
       ),
-      {
-        width: 960,
-        height: 540,
-        emoji: "blobmoji",
-      },
+      { width: IMG_WIDTH, height: IMG_HEIGHT, emoji: "blobmoji" },
     );
   } catch (e) {
-    return new ImageResponse(<Error error={e as Error} />, {
-      width: 960,
-      height: 540,
+    return new ImageResponse(<Error error={e as Error} width={IMG_WIDTH} />, {
+      width: IMG_WIDTH,
+      height: IMG_HEIGHT,
     });
   }
 }

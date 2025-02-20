@@ -15,6 +15,9 @@ const stepStep = new StepStep(
 const cryptoCompare = new CryptoCompare();
 const botBank = new BotBank();
 
+const IMG_WIDTH = 960;
+const IMG_HEIGHT = 540;
+
 export async function GET() {
   try {
     const date = new Date();
@@ -56,6 +59,7 @@ export async function GET() {
       stepStep.getAnalytics(),
     ]);
     const JPYData = ratesData.filter((x) => x.currency === "JPY")[0];
+    const last30dByDay = analyticsData.data.last30dByDay;
 
     const greeting =
       date.getHours() < 6
@@ -68,8 +72,12 @@ export async function GET() {
     return new ImageResponse(
       (
         <div
-          tw="flex h-[540px] w-[960px] flex-col bg-white p-2 text-xl"
+          tw="flex flex-col bg-white p-2 text-xl"
           lang="zh-TW"
+          style={{
+            width: IMG_WIDTH,
+            height: IMG_HEIGHT,
+          }}
         >
           <div tw="flex w-full items-center justify-between">
             <div tw="flex">
@@ -201,8 +209,8 @@ export async function GET() {
               </div>
               <div tw="flex items-end">
                 <div tw="flex text-4xl font-bold">
-                  {"steps" in analyticsData.data.last30dByDay[0]
-                    ? analyticsData.data.last30dByDay[0].steps.toLocaleString()
+                  {"steps" in last30dByDay[0]
+                    ? last30dByDay[0].steps.toLocaleString()
                     : 0}
                 </div>
                 <div tw="ml-1 opacity-50">步</div>
@@ -211,15 +219,18 @@ export async function GET() {
                 <MiniCard
                   title="距離"
                   value={
-                    "distance" in analyticsData.data.last30dByDay[0]
-                      ? analyticsData.data.last30dByDay[0].distance
-                      : 0
+                    "distance" in last30dByDay[0] ? last30dByDay[0].distance : 0
                   }
                   unit="公里"
                 />
                 <MiniCard
                   title="月均步數"
-                  value={analyticsData.data.aggregate._avg.steps * 24}
+                  value={
+                    last30dByDay.reduce(
+                      (a, b) => a + ("steps" in b ? b.steps : 0),
+                      0,
+                    ) / last30dByDay.filter((x) => "steps" in x).length
+                  }
                   unit="步"
                 />
               </div>
@@ -227,16 +238,12 @@ export async function GET() {
           </div>
         </div>
       ),
-      {
-        width: 960,
-        height: 540,
-        emoji: "blobmoji",
-      },
+      { width: IMG_WIDTH, height: IMG_HEIGHT, emoji: "blobmoji" },
     );
   } catch (e) {
-    return new ImageResponse(<Error error={e as Error} />, {
-      width: 960,
-      height: 540,
+    return new ImageResponse(<Error error={e as Error} width={IMG_WIDTH} />, {
+      width: IMG_WIDTH,
+      height: IMG_HEIGHT,
     });
   }
 }

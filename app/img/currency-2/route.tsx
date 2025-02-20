@@ -31,22 +31,13 @@ export async function GET() {
       cryptoCompare.getDetailedPrice("BTC"),
       cryptoCompare.getDetailedPrice("ETH"),
     ]);
-    console.log(ratesData);
+
     const SGDData = ratesData.filter((x) => x.currency === "SGD")[0];
     const EURData = ratesData.filter((x) => x.currency === "EUR")[0];
     const JPYData = ratesData.filter((x) => x.currency === "JPY")[0];
     const USDData = ratesData.filter((x) => x.currency === "USD")[0];
     const HKDData = ratesData.filter((x) => x.currency === "HKD")[0];
     const AUDData = ratesData.filter((x) => x.currency === "AUD")[0];
-
-    const greeting =
-      date.getHours() < 6
-        ? "晚安！"
-        : date.getHours() < 12
-          ? "早安！"
-          : date.getHours() < 18
-            ? "午安！"
-            : "晚安！";
 
     return new ImageResponse(
       (
@@ -124,7 +115,7 @@ export async function GET() {
       },
     );
   } catch (e) {
-    return new ImageResponse(<Error error={e as Error} />, {
+    return new ImageResponse(<Error error={e as Error} width={IMG_WIDTH} />, {
       width: IMG_WIDTH,
       height: IMG_HEIGHT,
     });
