@@ -7,7 +7,8 @@ const botBank = new BotBank();
 const cryptoCompare = new CryptoCompare();
 
 export async function GET() {
-  const date = new Date();
+  try {
+    const date = new Date();
   const currentDate = date.toLocaleDateString("zh-TW", {
     year: "numeric",
     month: "long",
@@ -134,6 +135,33 @@ export async function GET() {
       emoji: "blobmoji",
     },
   );
+  } catch (e) {
+    console.log(e);
+    return new ImageResponse(
+      (
+        <div
+          tw="bg-whitetext-xl flex h-[540px] w-[960px] flex-col"
+          lang="zh-TW"
+        >
+          <div tw="flex w-full items-center justify-between bg-gray-50 p-2">
+            <div tw="flex">Error</div>
+            <div>Currency Dashboard</div>
+          </div>
+          <div tw="mt-2 flex w-full flex-1 flex-col p-2">
+            <div tw="flex text-4xl">Error</div>
+            <div tw="text-2xl opacity-75">
+              {e instanceof Error ? e.message : "Error"}
+            </div>
+          </div>
+        </div>
+      ),
+      {
+        width: 960,
+        height: 540,
+        emoji: "blobmoji",
+      },
+    );
+  }
 }
 
 function MiniCard({
