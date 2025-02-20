@@ -1,5 +1,11 @@
 import { ImageResponse } from "next/og";
 
+import { BotBank } from "@/utils/bot-bank";
+import { CryptoCompare } from "@/utils/cryptocompare";
+
+const botBank = new BotBank();
+const cryptoCompare = new CryptoCompare();
+
 export async function GET() {
   const date = new Date();
   const currentDate = date.toLocaleDateString("zh-TW", {
@@ -13,6 +19,15 @@ export async function GET() {
     minute: "2-digit",
     hour12: false,
   });
+
+  const [ratesData, btcData] = await Promise.all([
+    botBank.getExchangeRates(),
+    cryptoCompare.getDetailedPrice("BTC"),
+  ]);
+  const JPYData = ratesData.filter((x) => x.currency === "JPY")[0];
+  const USDData = ratesData.filter((x) => x.currency === "USD")[0];
+  const HKDData = ratesData.filter((x) => x.currency === "HKD")[0];
+  const AUDData = ratesData.filter((x) => x.currency === "AUD")[0];
 
   const greeting =
     date.getHours() < 6
@@ -32,10 +47,20 @@ export async function GET() {
         <div tw="flex w-full items-center justify-between">
           <div tw="flex">
             <div tw="mr-1 flex rounded-md border-2 border-gray-100 px-2 py-1">
-              🌡️ 25.0°C
+              <span tw="mr-1 opacity-50">AUD</span> $
+              {AUDData.spotSell
+                ? AUDData.spotSell.toLocaleString("zh-TW", {
+                    maximumFractionDigits: 2,
+                  })
+                : "Error"}
             </div>
             <div tw="mr-1 flex rounded-md border-2 border-gray-100 px-2 py-1">
-              💧 60%
+              <span tw="mr-1 opacity-50">HKD</span> $
+              {HKDData.spotSell
+                ? HKDData.spotSell.toLocaleString("zh-TW", {
+                    maximumFractionDigits: 2,
+                  })
+                : "Error"}
             </div>
           </div>
           <div tw="flex items-center">
@@ -48,71 +73,56 @@ export async function GET() {
 
         <div tw="flex w-full flex-1 items-end justify-between">
           <h2 tw="flex text-left text-6xl font-bold tracking-tight text-gray-900">
-            <span>{greeting}</span>
-            <span tw="opacity-50">勝勝</span>
+            {greeting}
           </h2>
           <div tw="flex">
             <img
-              width="256"
-              height="220"
+              width="384"
+              height="330"
               src="https://skog-einvoice.gnehs.net/djungelskog.png"
             />
           </div>
         </div>
 
-        <div tw="mb-2 flex w-full items-center justify-between rounded-md bg-gray-100 p-2 px-4">
-          <div tw="flex text-3xl">☁️ 晴時多雲</div>
-          <div tw="flex text-2xl">25°C</div>
-        </div>
-
         <div tw="flex w-full justify-between">
           <div tw="flex w-[32.5%] flex-col rounded-md bg-gray-100 p-2 shadow">
             <div tw="flex justify-between">
-              <div>勝勝房間</div>
-              <div>⚡️</div>
-            </div>
-            <div tw="flex items-center">
-              <div tw="mr-2 flex items-end">
-                <div tw="flex text-4xl font-bold">150</div>
-                <div tw="ml-1 flex">W</div>
+              <div>BTC</div>
+              <div tw="flex">
+                {btcData.RAW.BTC.USD.CHANGEPCT24HOUR.toFixed(2)}%
               </div>
             </div>
-            <div tw="mt-2 flex">
-              <MiniCard title="衣櫃上" value={50} unit="W" />
-              <MiniCard title="衣櫃下" value={50} unit="W" />
-              <MiniCard title="書桌" value={50} unit="W" />
+            <div tw="flex items-end">
+              <div tw="text-4xl font-bold">
+                {btcData.RAW.BTC.USD.PRICE.toLocaleString("zh-TW", {
+                  maximumFractionDigits: 0,
+                })}
+              </div>
+              <div tw="ml-1 opacity-50">USD</div>
             </div>
           </div>
           <div tw="flex w-[32.5%] flex-col rounded-md bg-gray-100 p-2 shadow">
             <div tw="flex justify-between">
-              <div>BTC</div>
-              <div>−0.37%</div>
-            </div>
-            <div tw="flex items-end">
-              <div tw="text-4xl font-bold">95,372</div>
-              <div tw="ml-1 opacity-50">USD</div>
-            </div>
-            <div tw="mt-1 flex justify-between">
               <div>JPY/TWD</div>
-              <div>−0.09%</div>
+              <div tw="flex opacity-50">台灣銀行賣出</div>
             </div>
             <div tw="flex items-end">
-              <div tw="text-4xl font-bold">0.213</div>
+              <div tw="flex text-4xl font-bold">
+                {JPYData.spotSell ?? "Error"}
+              </div>
               <div tw="ml-1 opacity-50">TWD</div>
             </div>
           </div>
           <div tw="flex w-[32.5%] flex-col rounded-md bg-gray-100 p-2 shadow">
             <div tw="flex justify-between">
-              <div>餅餅踏踏</div>
-              <div>🚶</div>
+              <div>USD/TWD</div>
+              <div tw="flex opacity-50">台灣銀行賣出</div>
             </div>
             <div tw="flex items-end">
-              <div tw="flex text-4xl font-bold">8,000</div>
-              <div tw="ml-1 opacity-50">步</div>
-            </div>
-            <div tw="mt-2 flex">
-              <MiniCard title="距離" value={5.2} unit="公里" />
-              <MiniCard title="月均步數" value={7500} unit="步" />
+              <div tw="flex text-4xl font-bold">
+                {USDData.spotSell ?? "Error"}
+              </div>
+              <div tw="ml-1 opacity-50">TWD</div>
             </div>
           </div>
         </div>

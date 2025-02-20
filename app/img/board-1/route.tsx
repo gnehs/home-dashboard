@@ -55,7 +55,6 @@ export async function GET() {
     botBank.getExchangeRates(),
   ]);
   const JPYData = ratesData.filter((x) => x.currency === "JPY")[0];
-  console.log(JPYData);
 
   const greeting =
     date.getHours() < 6
