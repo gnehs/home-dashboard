@@ -13,6 +13,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-TW">
+      <head>
+        <link rel="icon" href="/house-plus.png" />
+      </head>
       <body className={`antialiased`}>{children}</body>
     </html>
   );
