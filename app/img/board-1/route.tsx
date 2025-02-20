@@ -2,6 +2,7 @@ import { ImageResponse } from "next/og";
 import { HomeAssistant } from "@/utils/homeAssistant";
 import { StepStep } from "@/utils/stepStep";
 import { CryptoCompare } from "@/utils/cryptocompare";
+import { BotBank } from "@/utils/bot-bank";
 // 創建實例
 const ha = new HomeAssistant(
   process.env.HOME_ASSISTANT_HOST!, // Home Assistant 的網址
@@ -12,6 +13,7 @@ const stepStep = new StepStep(
   process.env.STEPSTEP_TOKEN!, // 你的 Access Token
 );
 const cryptoCompare = new CryptoCompare();
+const botBank = new BotBank();
 
 export async function GET() {
   const date = new Date();
@@ -38,6 +40,7 @@ export async function GET() {
     playerState,
     analyticsData,
     btcData,
+    ratesData,
   ] = await Promise.all([
     ha.getState("sensor.ble_temperature_gnehs_temp"),
     ha.getState("sensor.ble_humidity_gnehs_temp"),
@@ -49,7 +52,10 @@ export async function GET() {
     ha.getState("media_player.mi_mao_mi_mao"),
     stepStep.getAnalytics(),
     cryptoCompare.getDetailedPrice("BTC"),
+    botBank.getExchangeRates(),
   ]);
+  const JPYData = ratesData.filter((x) => x.currency === "JPY")[0];
+  console.log(JPYData);
 
   const greeting =
     date.getHours() < 6
@@ -177,10 +183,12 @@ export async function GET() {
             </div>
             <div tw="mt-1 flex justify-between">
               <div>JPY/TWD</div>
-              <div>−0.09%</div>
+              <div tw="flex opacity-50">台銀賣出</div>
             </div>
             <div tw="flex items-end">
-              <div tw="text-4xl font-bold">0.213</div>
+              <div tw="flex text-4xl font-bold">
+                {JPYData.spotSell ?? "Error"}
+              </div>
               <div tw="ml-1 opacity-50">TWD</div>
             </div>
           </div>
