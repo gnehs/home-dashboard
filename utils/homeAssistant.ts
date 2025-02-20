@@ -26,6 +26,12 @@ export class HomeAssistant {
   private token: string;
 
   constructor(baseUrl: string, token: string) {
+    if (!baseUrl || !token) {
+      throw new Error("HomeAssistant - Base URL and token are required");
+    }
+    if (!baseUrl.startsWith("http")) {
+      throw new Error("HomeAssistant - Base URL must start with http or https");
+    }
     // Remove trailing slash if present
     this.baseUrl = baseUrl.replace(/\/$/, "");
     this.token = token;

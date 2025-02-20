@@ -5,14 +5,14 @@ import { CryptoCompare } from "@/utils/cryptocompare";
 
 import Error from "@/app/components/Error";
 
-const botBank = new BotBank();
-const cryptoCompare = new CryptoCompare();
-
 const IMG_WIDTH = 960;
 const IMG_HEIGHT = 540;
 
 export async function GET() {
   try {
+    const botBank = new BotBank();
+    const cryptoCompare = new CryptoCompare();
+
     const date = new Date();
     const currentDate = date.toLocaleDateString("zh-TW", {
       year: "numeric",

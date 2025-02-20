@@ -71,6 +71,12 @@ export class StepStep {
   private token: string;
 
   constructor(baseUrl: string, token: string) {
+    if (!baseUrl || !token) {
+      throw new Error("StepStep - Base URL and token are required");
+    }
+    if (!baseUrl.startsWith("http")) {
+      throw new Error("StepStep - Base URL must start with http or https");
+    }
     // Remove trailing slash if present
     this.baseUrl = baseUrl.replace(/\/$/, "");
     this.token = token;

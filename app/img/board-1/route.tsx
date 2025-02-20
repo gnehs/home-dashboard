@@ -4,22 +4,23 @@ import { StepStep } from "@/utils/stepStep";
 import { CryptoCompare } from "@/utils/cryptocompare";
 import { BotBank } from "@/utils/bot-bank";
 import Error from "@/app/components/Error";
-const ha = new HomeAssistant(
-  process.env.HOME_ASSISTANT_HOST!,
-  process.env.HOME_ASSISTANT_TOKEN!,
-);
-const stepStep = new StepStep(
-  process.env.STEPSTEP_HOST!,
-  process.env.STEPSTEP_TOKEN!,
-);
-const cryptoCompare = new CryptoCompare();
-const botBank = new BotBank();
 
 const IMG_WIDTH = 960;
 const IMG_HEIGHT = 540;
 
 export async function GET() {
   try {
+    const ha = new HomeAssistant(
+      process.env.HOME_ASSISTANT_HOST!,
+      process.env.HOME_ASSISTANT_TOKEN!,
+    );
+    const stepStep = new StepStep(
+      process.env.STEPSTEP_HOST!,
+      process.env.STEPSTEP_TOKEN!,
+    );
+    const cryptoCompare = new CryptoCompare();
+    const botBank = new BotBank();
+
     const date = new Date();
     const currentDate = date.toLocaleDateString("zh-TW", {
       year: "numeric",
