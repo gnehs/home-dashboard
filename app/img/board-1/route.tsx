@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { HomeAssistant } from "@/utils/homeAssistant";
 import { StepStep } from "@/utils/stepStep";
+import { CryptoCompare } from "@/utils/cryptocompare";
 // 創建實例
 const ha = new HomeAssistant(
   process.env.HOME_ASSISTANT_HOST!, // Home Assistant 的網址
@@ -10,6 +11,7 @@ const stepStep = new StepStep(
   process.env.STEPSTEP_HOST!, // StepStep 的網址
   process.env.STEPSTEP_TOKEN!, // 你的 Access Token
 );
+const cryptoCompare = new CryptoCompare();
 
 export async function GET() {
   const date = new Date();
@@ -35,6 +37,7 @@ export async function GET() {
     closetPowerStateDown,
     playerState,
     analyticsData,
+    btcData,
   ] = await Promise.all([
     ha.getState("sensor.ble_temperature_gnehs_temp"),
     ha.getState("sensor.ble_humidity_gnehs_temp"),
@@ -45,6 +48,7 @@ export async function GET() {
     ha.getState("sensor.tasmota_energy_power_5"),
     ha.getState("media_player.mi_mao_mi_mao"),
     stepStep.getAnalytics(),
+    cryptoCompare.getDetailedPrice("BTC"),
   ]);
 
   const greeting =
@@ -159,10 +163,16 @@ export async function GET() {
           <div tw="flex w-[32.5%] flex-col rounded-md bg-gray-100 p-2 shadow">
             <div tw="flex justify-between">
               <div>BTC</div>
-              <div>−0.37%</div>
+              <div tw="flex">
+                {btcData.RAW.BTC.USD.CHANGEPCT24HOUR.toFixed(2)}%
+              </div>
             </div>
             <div tw="flex items-end">
-              <div tw="text-4xl font-bold">95,372</div>
+              <div tw="text-4xl font-bold">
+                {btcData.RAW.BTC.USD.PRICE.toLocaleString("zh-TW", {
+                  maximumFractionDigits: 0,
+                })}
+              </div>
               <div tw="ml-1 opacity-50">USD</div>
             </div>
             <div tw="mt-1 flex justify-between">
