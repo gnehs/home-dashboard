@@ -49,6 +49,11 @@ export default function Home() {
           url="/img/currency"
           description="即時顯示加密貨幣與台銀匯率相關資訊"
         />
+        <Card
+          title="匯率 - 樣式 2"
+          url="/img/currency-2"
+          description="即時顯示加密貨幣與台銀匯率相關資訊"
+        />
       </div>
     </div>
   );
