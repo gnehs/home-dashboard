@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Home Dashboard",
-  description: "ePaper Dashboard",
+  description: "家用電子紙主控板",
 };
 
 export default function RootLayout({
