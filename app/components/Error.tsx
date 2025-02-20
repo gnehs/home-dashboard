@@ -37,13 +37,13 @@ export default function Error({
             <path d="M12 17h.01" />
           </svg>
           <div tw="mt-2 flex text-4xl">發生錯誤</div>
-          <div tw="text-2xl opacity-75">
+          <div tw="mt-1 text-2xl opacity-75">
             {error?.toString() ?? "Unknown Error"}
           </div>
-          <div tw="opacity-50">{date.toISOString()}</div>
+          <div tw="mt-1 opacity-50">{date.toISOString()}</div>
         </div>
         <div
-          tw="flex w-[256px]"
+          tw="flex w-[256px] flex-col"
           style={{
             width: 256,
           }}
@@ -52,7 +52,7 @@ export default function Error({
         </div>
       </div>
 
-      <div tw="flex w-full items-center justify-between bg-gray-50 p-2 px-6">
+      <div tw="flex w-full items-center justify-between border-t border-gray-200 bg-gray-50 p-2 px-6">
         <div>Home Dashboard</div>
         <div tw="opacity-50">{date.toLocaleString("zh-TW")}</div>
       </div>
