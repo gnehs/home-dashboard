@@ -28,6 +28,7 @@ export async function GET() {
     deskPowerState,
     closetPowerStateUpper,
     closetPowerStateDown,
+    playerState,
   ] = await Promise.all([
     ha.getState("sensor.ble_temperature_gnehs_temp"),
     ha.getState("sensor.ble_humidity_gnehs_temp"),
@@ -36,7 +37,9 @@ export async function GET() {
     ha.getState("sensor.tasmota_energy_power_7"),
     ha.getState("sensor.tasmota_energy_power"),
     ha.getState("sensor.tasmota_energy_power_5"),
+    ha.getState("media_player.mi_mao_mi_mao"),
   ]);
+  console.log();
 
   const greeting =
     date.getHours() < 6
@@ -62,11 +65,11 @@ export async function GET() {
               💧 {parseFloat(humidityState.state).toFixed(0)}
               {humidityState.attributes.unit_of_measurement}
             </div>
-            <div
-              tw={`mr-1 flex rounded-md border-2 border-gray-100 px-2 py-1 ${occupancyState.state !== "on" ? "border-dashed" : ""}`}
-            >
-              👤 {occupancyState.state === "on" ? "已偵測" : "未偵測"}
-            </div>
+            {occupancyState.state === "on" && (
+              <div tw="mr-1 flex rounded-md border-2 border-gray-100 px-2 py-1">
+                👤 已偵測
+              </div>
+            )}
           </div>
           <div tw="flex items-center">
             <div tw="mr-2 opacity-50">{currentDate}</div>
@@ -90,13 +93,27 @@ export async function GET() {
           </div>
         </div>
 
-        <div tw="my-2 flex w-full items-center justify-between rounded-md bg-gray-100 p-2">
-          <div tw="flex text-4xl"> ☁️ {weatherState.state}</div>
+        <div tw="mb-2 flex w-full items-center justify-between rounded-md bg-gray-100 p-2 px-4">
+          <div tw="flex text-3xl">☁️ {weatherState.state}</div>
           <div tw="flex text-2xl">
             {weatherState.attributes.temperature}
             {weatherState.attributes.temperature_unit}
           </div>
         </div>
+
+        {playerState.state === "playing" && (
+          <div tw="mb-2 flex w-full items-center rounded-md bg-gray-100 p-2 px-4">
+            <div tw="text-3xl">🎵</div>
+            <div tw="ml-4 flex flex-col">
+              <div tw="text-2xl">
+                {playerState.attributes.media_title.slice(0, 50)}
+              </div>
+              <div tw="opacity-50">
+                {playerState.attributes.media_artist.slice(0, 50)}
+              </div>
+            </div>
+          </div>
+        )}
         <div tw="flex w-full justify-between">
           <div tw="flex w-[32.5%] flex-col rounded-md bg-gray-100 p-2 shadow">
             <div tw="flex justify-between">
@@ -157,7 +174,9 @@ export async function GET() {
               <div>🚶</div>
             </div>
             <div tw="flex items-end">
-              <div tw="text-4xl font-bold">4,321</div>
+              <div tw="text-4xl font-bold">
+                {parseInt("11111").toLocaleString()}
+              </div>
               <div tw="ml-1 opacity-50">步</div>
             </div>
             <div tw="mt-2 flex">

@@ -57,7 +57,8 @@ export class HomeAssistant {
    * Get all available services
    */
   async getServices() {
-    const data = await this.request<z.infer<typeof ServiceResponse>>("/services");
+    const data =
+      await this.request<z.infer<typeof ServiceResponse>>("/services");
     return ServiceResponse.parse(data);
   }
 
@@ -82,7 +83,11 @@ export class HomeAssistant {
   /**
    * Set state of an entity
    */
-  async setState(entityId: string, state: string, attributes?: Record<string, any>) {
+  async setState(
+    entityId: string,
+    state: string,
+    attributes?: Record<string, any>,
+  ) {
     const data = await this.request<z.infer<typeof StateResponse>>(
       `/states/${entityId}`,
       {
@@ -96,7 +101,11 @@ export class HomeAssistant {
   /**
    * Call a service
    */
-  async callService(domain: string, service: string, serviceData?: Record<string, any>) {
+  async callService(
+    domain: string,
+    service: string,
+    serviceData?: Record<string, any>,
+  ) {
     return this.request(`/services/${domain}/${service}`, {
       method: "POST",
       body: JSON.stringify(serviceData),
@@ -113,15 +122,18 @@ export class HomeAssistant {
   /**
    * Get history for a specific period
    */
-  async getHistory(timestamp?: string, filterEntityId?: string) {
-    const params = new URLSearchParams();
+  async getHistory(filterEntityId?: string, params?: Record<string, any>) {
+    const searchParams = new URLSearchParams();
     if (filterEntityId) {
-      params.append("filter_entity_id", filterEntityId);
+      searchParams.append("filter_entity_id", filterEntityId);
+    }
+    if (params) {
+      for (const [key, value] of Object.entries(params)) {
+        searchParams.append(key, value);
+      }
     }
 
-    const endpoint = timestamp
-      ? `/history/period/${timestamp}?${params}`
-      : `/history/period?${params}`;
+    const endpoint = `/history/period?${searchParams}`;
 
     return this.request<z.infer<typeof StateResponse>[][]>(endpoint);
   }
