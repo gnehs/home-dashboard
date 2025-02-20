@@ -3,14 +3,14 @@ import { HomeAssistant } from "@/utils/homeAssistant";
 import { StepStep } from "@/utils/stepStep";
 import { CryptoCompare } from "@/utils/cryptocompare";
 import { BotBank } from "@/utils/bot-bank";
-// 創建實例
+
 const ha = new HomeAssistant(
-  process.env.HOME_ASSISTANT_HOST!, // Home Assistant 的網址
-  process.env.HOME_ASSISTANT_TOKEN!, // 你的 Access Token
+  process.env.HOME_ASSISTANT_HOST!,
+  process.env.HOME_ASSISTANT_TOKEN!,
 );
 const stepStep = new StepStep(
-  process.env.STEPSTEP_HOST!, // StepStep 的網址
-  process.env.STEPSTEP_TOKEN!, // 你的 Access Token
+  process.env.STEPSTEP_HOST!,
+  process.env.STEPSTEP_TOKEN!,
 );
 const cryptoCompare = new CryptoCompare();
 const botBank = new BotBank();
@@ -234,29 +234,47 @@ export async function GET() {
       },
     );
   } catch (e) {
-    console.log(e);
+    const date = new Date();
     return new ImageResponse(
       (
         <div
-          tw="bg-whitetext-xl flex h-[540px] w-[960px] flex-col"
+          tw="flex h-[540px] w-[960px] flex-col bg-white text-xl"
           lang="zh-TW"
         >
-          <div tw="flex w-full items-center justify-between bg-gray-50 p-2">
-            <div tw="flex">Error</div>
-            <div>Home Dashboard</div>
-          </div>
-          <div tw="mt-2 flex w-full flex-1 flex-col p-2">
-            <div tw="flex text-4xl">Error</div>
-            <div tw="text-2xl opacity-75">
-              {e instanceof Error ? e.message : "Error"}
+          <div tw="mt-2 flex w-full flex-1 flex-col justify-center p-2 px-6">
+            <div tw="flex flex-col">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="48"
+                height="48"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+                <path d="M12 9v4" />
+                <path d="M12 17h.01" />
+              </svg>
+
+              <div tw="mt-2 flex text-4xl">Error</div>
+              <div tw="text-2xl opacity-75">
+                {e instanceof Error ? e.message : "Error"}
+              </div>
             </div>
+          </div>
+
+          <div tw="flex w-full items-center justify-between bg-gray-50 p-2 px-6">
+            <div>Home Dashboard</div>
+            <div tw="p-2 opacity-50">{date.toLocaleString("zh-TW")}</div>
           </div>
         </div>
       ),
       {
         width: 960,
         height: 540,
-        emoji: "blobmoji",
       },
     );
   }
