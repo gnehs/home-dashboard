@@ -3,7 +3,7 @@ import { HomeAssistant } from "@/utils/homeAssistant";
 import { StepStep } from "@/utils/stepStep";
 import { CryptoCompare } from "@/utils/cryptocompare";
 import { BotBank } from "@/utils/bot-bank";
-
+import Error from "@/app/components/Error";
 const ha = new HomeAssistant(
   process.env.HOME_ASSISTANT_HOST!,
   process.env.HOME_ASSISTANT_TOKEN!,
@@ -45,12 +45,12 @@ export async function GET() {
     ] = await Promise.all([
       ha.getState("sensor.ble_temperature_gnehs_temp"),
       ha.getState("sensor.ble_humidity_gnehs_temp"),
-      ha.getState("binary_sensor.unknown_occupancy"),
+      ha.getState("binary_sensor.unknown_occupancy"), // Sonoff SNZB-06P
       ha.getState("weather.yong_he_bao_bao"),
-      ha.getState("sensor.tasmota_energy_power_7"),
-      ha.getState("sensor.tasmota_energy_power"),
-      ha.getState("sensor.tasmota_energy_power_5"),
-      ha.getState("media_player.mi_mao_mi_mao"),
+      ha.getState("sensor.tasmota_energy_power_7"), // Sonoff S31 with Tasmota
+      ha.getState("sensor.tasmota_energy_power"), // Sonoff S31 with Tasmota
+      ha.getState("sensor.tasmota_energy_power_5"), // Sonoff S31 with Tasmota
+      ha.getState("media_player.mi_mao_mi_mao"), // HomePod mini
       cryptoCompare.getDetailedPrice("BTC"),
       botBank.getExchangeRates(),
       stepStep.getAnalytics(),
@@ -114,10 +114,10 @@ export async function GET() {
                 <div tw="text-3xl">🎵</div>
                 <div tw="ml-4 flex flex-col">
                   <div tw="text-2xl">
-                    {playerState.attributes.media_title.slice(0, 50)}
+                    {playerState.attributes.media_title.slice(0, 30)}
                   </div>
                   <div tw="opacity-50">
-                    {playerState.attributes.media_artist.slice(0, 50)}
+                    {playerState.attributes.media_artist.slice(0, 30)}
                   </div>
                 </div>
               </div>
@@ -234,49 +234,10 @@ export async function GET() {
       },
     );
   } catch (e) {
-    const date = new Date();
-    return new ImageResponse(
-      (
-        <div
-          tw="flex h-[540px] w-[960px] flex-col bg-white text-xl"
-          lang="zh-TW"
-        >
-          <div tw="mt-2 flex w-full flex-1 flex-col justify-center p-2 px-6">
-            <div tw="flex flex-col">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="48"
-                height="48"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
-                <path d="M12 9v4" />
-                <path d="M12 17h.01" />
-              </svg>
-
-              <div tw="mt-2 flex text-4xl">Error</div>
-              <div tw="text-2xl opacity-75">
-                {e instanceof Error ? e.message : "Error"}
-              </div>
-            </div>
-          </div>
-
-          <div tw="flex w-full items-center justify-between bg-gray-50 p-2 px-6">
-            <div>Home Dashboard</div>
-            <div tw="p-2 opacity-50">{date.toLocaleString("zh-TW")}</div>
-          </div>
-        </div>
-      ),
-      {
-        width: 960,
-        height: 540,
-      },
-    );
+    return new ImageResponse(<Error error={e as Error} />, {
+      width: 960,
+      height: 540,
+    });
   }
 }
 
