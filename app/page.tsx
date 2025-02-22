@@ -46,6 +46,12 @@ export default function Home() {
           notice="這個主控板需要進行 API Host 與 token 設定與並針對您的 Home Assistant 裝置 ID 進行修改，若未進行上述步驟將無法正常顯示。"
         />
         <Card
+          title="天氣"
+          url="/img/weather"
+          description="即時顯示天氣資訊"
+          notice="預設位置為台北，若要變更區域需要修改環境變數"
+        />
+        <Card
           title="匯率"
           url="/img/currency"
           description="即時顯示加密貨幣與台銀匯率相關資訊"
