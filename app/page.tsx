@@ -46,6 +46,11 @@ export default function Home() {
           notice="這個主控板需要進行 API Host 與 token 設定與並針對您的 Home Assistant 裝置 ID 進行修改，若未進行上述步驟將無法正常顯示。"
         />
         <Card
+          title="今日"
+          url="/img/day-clock"
+          description="視覺化呈現的顯示今天還有多少分鐘"
+        />
+        <Card
           title="天氣"
           url="/img/weather"
           description="即時顯示天氣資訊"
