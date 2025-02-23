@@ -34,21 +34,15 @@ export async function GET() {
     return new ImageResponse(
       (
         <div
-          tw="flex bg-white text-2xl"
+          tw="flex flex-col bg-gray-50 p-4 text-2xl"
           lang="zh-TW"
           style={{
             width: IMG_WIDTH,
             height: IMG_HEIGHT,
           }}
         >
-          <div
-            tw="relative flex flex-col"
-            style={{
-              width: (IMG_WIDTH / 3) * 2,
-              height: IMG_HEIGHT,
-            }}
-          >
-            <div tw="flex justify-between">
+          <div tw="relative flex w-full flex-1 flex-col">
+            <div tw="-mx-2 flex justify-between">
               <WeatherCard
                 title="天氣"
                 value={
@@ -63,7 +57,7 @@ export async function GET() {
                     currentWeather.data.next_1_hours?.summary.symbol_code || "",
                   )
                 }
-                width={((IMG_WIDTH / 3) * 2) / 3 - 8}
+                width={IMG_WIDTH / 3 - 8}
               />
               <WeatherCard
                 title="氣溫"
@@ -78,18 +72,18 @@ export async function GET() {
                 ).toFixed(1)}°C`}
                 value={currentWeather.data.instant.details.air_temperature}
                 unit="°C"
-                width={((IMG_WIDTH / 3) * 2) / 3 - 8}
+                width={IMG_WIDTH / 3 - 8}
               />
               <WeatherCard
                 title="相對濕度"
                 value={currentWeather.data.instant.details.relative_humidity}
                 unit="%"
-                width={((IMG_WIDTH / 3) * 2) / 3 - 8}
+                width={IMG_WIDTH / 3 - 8}
               />
             </div>
-            <div tw="flex-1"></div>
+            <div tw="flex-1" />
             <div
-              tw="flex flex-col items-start p-2"
+              tw="flex flex-col items-start"
               style={{
                 fontFamily: `"DM Sans", "Noto Sans TC"`,
               }}
@@ -97,7 +91,7 @@ export async function GET() {
               <div tw="text-6xl font-bold">{currentTime}</div>
               <div tw="text-2xl opacity-50">{currentDate}</div>
             </div>
-            <div tw="absolute bottom-0 right-2 flex justify-center">
+            <div tw="absolute bottom-0 right-0 flex justify-center">
               <img
                 width="288"
                 height="247.5"
@@ -105,21 +99,14 @@ export async function GET() {
               />
             </div>
           </div>
-          <div
-            tw="flex flex-col items-center justify-between"
-            style={{
-              width: IMG_WIDTH / 3,
-              height: IMG_HEIGHT,
-            }}
-          >
-            {next24Hours.slice(0, 7).map((hour, index) => (
+          <div tw="flex items-center justify-between pt-4">
+            {next24Hours.slice(0, 8).map((hour, index) => (
               <MiniWeatherCard
                 key={index}
-                time={new Date(hour.time).toLocaleTimeString("zh-TW", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  hour12: false,
-                })}
+                time={new Date(hour.time)
+                  .getHours()
+                  .toString()
+                  .padStart(2, "0")}
                 temperature={hour.data.instant.details.air_temperature}
                 symbol={hour.data.next_1_hours?.summary.symbol_code}
                 precipitation={
@@ -176,43 +163,29 @@ function MiniWeatherCard({
   precipitation?: number;
 }) {
   return (
-    <div tw="flex w-full items-center">
-      <div
-        tw="flex items-center justify-center rounded border border-black/10 text-4xl"
-        style={{
-          height: 56,
-          width: 56,
-        }}
-      >
-        {symbol && getWeatherIcon(symbol)}
+    <div
+      tw="flex flex-col items-center justify-center rounded-xl border-2 border-[#E0E1E2]"
+      style={{
+        fontFamily: `"DM Sans", "Noto Sans TC"`,
+      }}
+    >
+      <div tw="w-full items-center justify-center bg-[#E0E1E2] py-1 text-center text-gray-700">
+        {time}
       </div>
-      <div
-        tw="flex w-full flex-col justify-between px-2"
-        style={{
-          width: IMG_WIDTH / 3 - 8 - 64,
-        }}
-      >
-        <div tw="flex items-center">
-          <div tw="mr-2 opacity-75">{time}</div>
-          <div tw="flex items-center text-xl">
-            {WeatherStates[symbol as keyof typeof WeatherStates] || "未知"}
-          </div>
+      <div tw="flex flex-col px-4 py-2">
+        <div tw="my-2 flex items-center justify-center text-6xl">
+          {symbol && getWeatherIcon(symbol)}
         </div>
-        <div
-          tw="flex items-end"
-          style={{
-            fontFamily: `"DM Sans", "Noto Sans TC"`,
-          }}
-        >
+        <div tw="flex items-end">
           <div tw="mr-1">{temperature.toFixed(1)}</div>
-          <div tw="mr-2 flex text-base opacity-50">°C</div>
-          {precipitation !== undefined && (
-            <div tw="flex items-end">
-              <div tw="mr-1">{precipitation.toFixed(1)}</div>
-              <div tw="mr-2 flex text-base opacity-50">mm</div>
-            </div>
-          )}
+          <div tw="flex text-base opacity-50">°C</div>
         </div>
+        {precipitation !== undefined && (
+          <div tw="flex items-end">
+            <div tw="mr-1">{precipitation.toFixed(1)}</div>
+            <div tw="flex text-base opacity-50">mm</div>
+          </div>
+        )}{" "}
       </div>
     </div>
   );
@@ -233,7 +206,7 @@ function WeatherCard({
 }) {
   return (
     <div
-      tw="flex flex-col items-center p-2"
+      tw="flex flex-col items-center px-2"
       style={{
         width,
       }}
@@ -264,7 +237,7 @@ function WeatherCard({
           <div tw="ml-1 opacity-50">{unit}</div>
         </div>
       </div>
-      <div tw="h-1 w-full rounded-full bg-black/10" />
+      <div tw="h-1 w-full rounded-full bg-[#E0E1E2]" />
     </div>
   );
 }
