@@ -26,20 +26,8 @@ export async function loadGoogleFont(font: string, text: string) {
   const fonts = await res.arrayBuffer();
   return fonts;
 }
-export async function loadGoogleFonts(text: string) {
+export async function loadGoogleFonts(text: string = "") {
   const fontsConfig = [
-    {
-      name: "Noto Sans TC",
-      font: "Noto+Sans+TC",
-      weight: 400,
-      style: "normal",
-    },
-    {
-      name: "Noto Sans TC",
-      font: "Noto+Sans+TC:wght@700",
-      weight: 700,
-      style: "bold",
-    },
     {
       name: "DM Sans",
       font: "DM+Sans",
@@ -54,12 +42,28 @@ export async function loadGoogleFonts(text: string) {
     },
   ];
 
-  const fonts = await Promise.all(
-    fontsConfig.map(async ({ name, font, weight, style }) => {
+  const fonts = await Promise.all([
+    ...fontsConfig.map(async ({ name, font, weight, style }) => {
       const data = await loadGoogleFont(font, text);
       return { name, data, weight, style };
     }),
-  );
+    {
+      name: "Noto Sans TC",
+      data: await fetch(
+        "https://fonts.gstatic.com/ea/notosanstc/v1/NotoSansTC-Regular.woff",
+      ).then((res) => res.arrayBuffer()),
+      weight: 400,
+      style: "normal",
+    },
+    {
+      name: "Noto Sans TC",
+      data: await fetch(
+        "https://fonts.gstatic.com/ea/notosanstc/v1/NotoSansTC-Bold.woff",
+      ).then((res) => res.arrayBuffer()),
+      weight: 700,
+      style: "bold",
+    },
+  ]);
 
   return fonts;
 }
