@@ -71,175 +71,173 @@ export async function GET() {
           : date.getHours() < 18
             ? "午安！"
             : "晚安！";
-    return new ImageResponse(
-      (
-        <div
-          tw="flex flex-col bg-white p-2 text-xl"
-          lang="zh-TW"
-          style={{
-            width: IMG_WIDTH,
-            height: IMG_HEIGHT,
-          }}
-        >
-          <div tw="flex w-full items-center justify-between">
-            <div tw="flex">
+    return ImageResponse(
+      <div
+        tw="flex flex-col bg-white p-2 text-xl"
+        lang="zh-TW"
+        style={{
+          width: IMG_WIDTH,
+          height: IMG_HEIGHT,
+        }}
+      >
+        <div tw="flex w-full items-center justify-between">
+          <div tw="flex">
+            <div tw="mr-1 flex rounded-md border-2 border-gray-100 px-2 py-1">
+              🌡️ {parseFloat(tempState.state).toFixed(1)}
+              {tempState.attributes.unit_of_measurement}
+            </div>
+            <div tw="mr-1 flex rounded-md border-2 border-gray-100 px-2 py-1">
+              💧 {parseFloat(humidityState.state).toFixed(0)}
+              {humidityState.attributes.unit_of_measurement}
+            </div>
+            {occupancyState.state === "on" && (
               <div tw="mr-1 flex rounded-md border-2 border-gray-100 px-2 py-1">
-                🌡️ {parseFloat(tempState.state).toFixed(1)}
-                {tempState.attributes.unit_of_measurement}
-              </div>
-              <div tw="mr-1 flex rounded-md border-2 border-gray-100 px-2 py-1">
-                💧 {parseFloat(humidityState.state).toFixed(0)}
-                {humidityState.attributes.unit_of_measurement}
-              </div>
-              {occupancyState.state === "on" && (
-                <div tw="mr-1 flex rounded-md border-2 border-gray-100 px-2 py-1">
-                  👤 已偵測
-                </div>
-              )}
-            </div>
-            <div tw="flex items-center">
-              <div tw="mr-2 opacity-50">{currentDate}</div>
-              <div tw="rounded-full border-2 border-black bg-black px-2 text-xl text-white">
-                {currentTime}
-              </div>
-            </div>
-          </div>
-
-          <div tw="flex w-full flex-1 items-end justify-between">
-            <h2 tw="flex text-left text-6xl font-bold tracking-tight text-gray-900">
-              <span>{greeting}</span>
-              <span tw="opacity-50">勝勝</span>
-            </h2>
-            <div tw="flex">
-              <img
-                width="256"
-                height="220"
-                src="https://skog-einvoice.gnehs.net/djungelskog.png"
-              />
-            </div>
-          </div>
-          <div tw="mb-2 flex justify-between">
-            {playerState.state === "playing" && (
-              <div tw="mr-2 flex w-[49.5%] items-center rounded-md bg-gray-100 p-2 px-4">
-                <div tw="text-3xl">🎵</div>
-                <div tw="ml-4 flex flex-col">
-                  <div tw="text-2xl">
-                    {playerState.attributes.media_title.slice(0, 30)}
-                  </div>
-                  <div tw="opacity-50">
-                    {playerState.attributes.media_artist.slice(0, 30)}
-                  </div>
-                </div>
+                👤 已偵測
               </div>
             )}
-            <div
-              tw={`flex items-center justify-between rounded-md bg-gray-100 p-2 px-4 ${playerState.state === "playing" ? "w-[49.5%]" : "w-full"}`}
-            >
-              <div tw="flex text-3xl">☁️ {weatherState.state}</div>
-              <div tw="flex text-2xl">
-                {weatherState.attributes.temperature}
-                {weatherState.attributes.temperature_unit}
-              </div>
-            </div>
           </div>
-          <div tw="flex w-full justify-between">
-            <div tw="flex w-[32.5%] flex-col rounded-md bg-gray-100 p-2 shadow">
-              <div tw="flex justify-between">
-                <div>勝勝房間</div>
-                <div>⚡️</div>
-              </div>
-              <div tw="flex items-center">
-                <div tw="mr-2 flex items-end">
-                  <div tw="flex text-4xl font-bold">
-                    {parseFloat(closetPowerStateUpper.state) +
-                      parseFloat(closetPowerStateDown.state) +
-                      parseFloat(deskPowerState.state)}
-                  </div>
-                  <div tw="ml-1 flex">
-                    {deskPowerState.attributes.unit_of_measurement}
-                  </div>
-                </div>
-              </div>
-              <div tw="mt-2 flex">
-                <MiniCard
-                  title="衣櫃上"
-                  value={parseFloat(closetPowerStateUpper.state)}
-                  unit={closetPowerStateUpper.attributes.unit_of_measurement}
-                />
-                <MiniCard
-                  title="衣櫃下"
-                  value={parseFloat(closetPowerStateDown.state)}
-                  unit={closetPowerStateDown.attributes.unit_of_measurement}
-                />
-                <MiniCard
-                  title="書桌"
-                  value={parseFloat(deskPowerState.state)}
-                  unit={deskPowerState.attributes.unit_of_measurement}
-                />
-              </div>
-            </div>
-            <div tw="flex w-[32.5%] flex-col rounded-md bg-gray-100 p-2 shadow">
-              <div tw="flex justify-between">
-                <div>BTC</div>
-                <div tw="flex">
-                  {btcData.RAW.BTC.USD.CHANGEPCT24HOUR.toFixed(2)}%
-                </div>
-              </div>
-              <div tw="flex items-end">
-                <div tw="text-4xl font-bold">
-                  {btcData.RAW.BTC.USD.PRICE.toLocaleString("zh-TW", {
-                    maximumFractionDigits: 0,
-                  })}
-                </div>
-                <div tw="ml-1 opacity-50">USD</div>
-              </div>
-              <div tw="mt-1 flex justify-between">
-                <div>JPY/TWD</div>
-                <div tw="flex opacity-50">台銀賣出</div>
-              </div>
-              <div tw="flex items-end">
-                <div tw="flex text-4xl font-bold">
-                  {JPYData.spotSell ?? "Error"}
-                </div>
-                <div tw="ml-1 opacity-50">TWD</div>
-              </div>
-            </div>
-            <div tw="flex w-[32.5%] flex-col rounded-md bg-gray-100 p-2 shadow">
-              <div tw="flex justify-between">
-                <div>餅餅踏踏</div>
-                <div>🚶</div>
-              </div>
-              <div tw="flex items-end">
-                <div tw="flex text-4xl font-bold">
-                  {"steps" in last30dByDay[0]
-                    ? last30dByDay[0].steps.toLocaleString()
-                    : 0}
-                </div>
-                <div tw="ml-1 opacity-50">步</div>
-              </div>
-              <div tw="mt-2 flex">
-                <MiniCard
-                  title="距離"
-                  value={
-                    "distance" in last30dByDay[0] ? last30dByDay[0].distance : 0
-                  }
-                  unit="公里"
-                />
-                <MiniCard
-                  title="月均步數"
-                  value={
-                    last30dByDay.reduce(
-                      (a, b) => a + ("steps" in b ? b.steps : 0),
-                      0,
-                    ) / last30dByDay.filter((x) => "steps" in x).length
-                  }
-                  unit="步"
-                />
-              </div>
+          <div tw="flex items-center">
+            <div tw="mr-2 opacity-50">{currentDate}</div>
+            <div tw="rounded-full border-2 border-black bg-black px-2 text-xl text-white">
+              {currentTime}
             </div>
           </div>
         </div>
-      ),
+
+        <div tw="flex w-full flex-1 items-end justify-between">
+          <h2 tw="flex text-left text-6xl font-bold tracking-tight text-gray-900">
+            <span>{greeting}</span>
+            <span tw="opacity-50">勝勝</span>
+          </h2>
+          <div tw="flex">
+            <img
+              width="256"
+              height="220"
+              src="https://skog-einvoice.gnehs.net/djungelskog.png"
+            />
+          </div>
+        </div>
+        <div tw="mb-2 flex justify-between">
+          {playerState.state === "playing" && (
+            <div tw="mr-2 flex w-[49.5%] items-center rounded-md bg-gray-100 p-2 px-4">
+              <div tw="text-3xl">🎵</div>
+              <div tw="ml-4 flex flex-col">
+                <div tw="text-2xl">
+                  {playerState.attributes.media_title.slice(0, 30)}
+                </div>
+                <div tw="opacity-50">
+                  {playerState.attributes.media_artist.slice(0, 30)}
+                </div>
+              </div>
+            </div>
+          )}
+          <div
+            tw={`flex items-center justify-between rounded-md bg-gray-100 p-2 px-4 ${playerState.state === "playing" ? "w-[49.5%]" : "w-full"}`}
+          >
+            <div tw="flex text-3xl">☁️ {weatherState.state}</div>
+            <div tw="flex text-2xl">
+              {weatherState.attributes.temperature}
+              {weatherState.attributes.temperature_unit}
+            </div>
+          </div>
+        </div>
+        <div tw="flex w-full justify-between">
+          <div tw="flex w-[32.5%] flex-col rounded-md bg-gray-100 p-2 shadow">
+            <div tw="flex justify-between">
+              <div>勝勝房間</div>
+              <div>⚡️</div>
+            </div>
+            <div tw="flex items-center">
+              <div tw="mr-2 flex items-end">
+                <div tw="flex text-4xl font-bold">
+                  {parseFloat(closetPowerStateUpper.state) +
+                    parseFloat(closetPowerStateDown.state) +
+                    parseFloat(deskPowerState.state)}
+                </div>
+                <div tw="ml-1 flex">
+                  {deskPowerState.attributes.unit_of_measurement}
+                </div>
+              </div>
+            </div>
+            <div tw="mt-2 flex">
+              <MiniCard
+                title="衣櫃上"
+                value={parseFloat(closetPowerStateUpper.state)}
+                unit={closetPowerStateUpper.attributes.unit_of_measurement}
+              />
+              <MiniCard
+                title="衣櫃下"
+                value={parseFloat(closetPowerStateDown.state)}
+                unit={closetPowerStateDown.attributes.unit_of_measurement}
+              />
+              <MiniCard
+                title="書桌"
+                value={parseFloat(deskPowerState.state)}
+                unit={deskPowerState.attributes.unit_of_measurement}
+              />
+            </div>
+          </div>
+          <div tw="flex w-[32.5%] flex-col rounded-md bg-gray-100 p-2 shadow">
+            <div tw="flex justify-between">
+              <div>BTC</div>
+              <div tw="flex">
+                {btcData.RAW.BTC.USD.CHANGEPCT24HOUR.toFixed(2)}%
+              </div>
+            </div>
+            <div tw="flex items-end">
+              <div tw="text-4xl font-bold">
+                {btcData.RAW.BTC.USD.PRICE.toLocaleString("zh-TW", {
+                  maximumFractionDigits: 0,
+                })}
+              </div>
+              <div tw="ml-1 opacity-50">USD</div>
+            </div>
+            <div tw="mt-1 flex justify-between">
+              <div>JPY/TWD</div>
+              <div tw="flex opacity-50">台銀賣出</div>
+            </div>
+            <div tw="flex items-end">
+              <div tw="flex text-4xl font-bold">
+                {JPYData.spotSell ?? "Error"}
+              </div>
+              <div tw="ml-1 opacity-50">TWD</div>
+            </div>
+          </div>
+          <div tw="flex w-[32.5%] flex-col rounded-md bg-gray-100 p-2 shadow">
+            <div tw="flex justify-between">
+              <div>餅餅踏踏</div>
+              <div>🚶</div>
+            </div>
+            <div tw="flex items-end">
+              <div tw="flex text-4xl font-bold">
+                {"steps" in last30dByDay[0]
+                  ? last30dByDay[0].steps.toLocaleString()
+                  : 0}
+              </div>
+              <div tw="ml-1 opacity-50">步</div>
+            </div>
+            <div tw="mt-2 flex">
+              <MiniCard
+                title="距離"
+                value={
+                  "distance" in last30dByDay[0] ? last30dByDay[0].distance : 0
+                }
+                unit="公里"
+              />
+              <MiniCard
+                title="月均步數"
+                value={
+                  last30dByDay.reduce(
+                    (a, b) => a + ("steps" in b ? b.steps : 0),
+                    0,
+                  ) / last30dByDay.filter((x) => "steps" in x).length
+                }
+                unit="步"
+              />
+            </div>
+          </div>
+        </div>
+      </div>,
       {
         width: IMG_WIDTH,
         height: IMG_HEIGHT,
@@ -249,7 +247,7 @@ export async function GET() {
       },
     );
   } catch (e) {
-    return new ImageResponse(<Error error={e as Error} width={IMG_WIDTH} />, {
+    return ImageResponse(<Error error={e as Error} width={IMG_WIDTH} />, {
       width: IMG_WIDTH,
       height: IMG_HEIGHT,
       //@ts-expect-error loadGoogleFonts is not typed

@@ -31,92 +31,87 @@ export async function GET() {
     const currentWeather = weatherData.properties.timeseries[0];
     const next24Hours = weatherData.properties.timeseries.slice(1, 9);
 
-    return new ImageResponse(
-      (
-        <div
-          tw="flex flex-col bg-gray-50 p-4 text-2xl"
-          lang="zh-TW"
-          style={{
-            width: IMG_WIDTH,
-            height: IMG_HEIGHT,
-          }}
-        >
-          <div tw="relative flex w-full flex-1 flex-col">
-            <div tw="-mx-2 flex justify-between">
-              <WeatherCard
-                title="天氣"
-                value={
-                  (WeatherStates[
-                    currentWeather.data.next_1_hours?.summary
-                      .symbol_code as keyof typeof WeatherStates
-                  ] ||
-                    currentWeather.data.next_1_hours?.summary.symbol_code ||
-                    "") +
-                  " " +
-                  getWeatherIcon(
-                    currentWeather.data.next_1_hours?.summary.symbol_code || "",
-                  )
-                }
-                width={IMG_WIDTH / 3 - 8}
-              />
-              <WeatherCard
-                title="氣溫"
-                subtitle={`${Math.min(
-                  ...next24Hours.map(
-                    (hour) => hour.data.instant.details.air_temperature,
-                  ),
-                ).toFixed(1)}°C / ${Math.max(
-                  ...next24Hours.map(
-                    (hour) => hour.data.instant.details.air_temperature,
-                  ),
-                ).toFixed(1)}°C`}
-                value={currentWeather.data.instant.details.air_temperature}
-                unit="°C"
-                width={IMG_WIDTH / 3 - 8}
-              />
-              <WeatherCard
-                title="相對濕度"
-                value={currentWeather.data.instant.details.relative_humidity}
-                unit="%"
-                width={IMG_WIDTH / 3 - 8}
-              />
-            </div>
-            <div tw="flex-1" />
-            <div
-              tw="flex flex-col items-start"
-              style={{
-                fontFamily: `"DM Sans", "Noto Sans TC"`,
-              }}
-            >
-              <div tw="text-6xl font-bold">{currentTime}</div>
-              <div tw="text-2xl opacity-50">{currentDate}</div>
-            </div>
-            <div tw="absolute bottom-0 right-0 flex justify-center">
-              <img
-                width="288"
-                height="247.5"
-                src="https://skog-einvoice.gnehs.net/djungelskog.png"
-              />
-            </div>
+    return ImageResponse(
+      <div
+        tw="flex flex-col bg-gray-50 p-4 text-2xl"
+        lang="zh-TW"
+        style={{
+          width: IMG_WIDTH,
+          height: IMG_HEIGHT,
+        }}
+      >
+        <div tw="relative flex w-full flex-1 flex-col">
+          <div tw="-mx-2 flex justify-between">
+            <WeatherCard
+              title="天氣"
+              value={
+                (WeatherStates[
+                  currentWeather.data.next_1_hours?.summary
+                    .symbol_code as keyof typeof WeatherStates
+                ] ||
+                  currentWeather.data.next_1_hours?.summary.symbol_code ||
+                  "") +
+                " " +
+                getWeatherIcon(
+                  currentWeather.data.next_1_hours?.summary.symbol_code || "",
+                )
+              }
+              width={IMG_WIDTH / 3 - 8}
+            />
+            <WeatherCard
+              title="氣溫"
+              subtitle={`${Math.min(
+                ...next24Hours.map(
+                  (hour) => hour.data.instant.details.air_temperature,
+                ),
+              ).toFixed(1)}°C / ${Math.max(
+                ...next24Hours.map(
+                  (hour) => hour.data.instant.details.air_temperature,
+                ),
+              ).toFixed(1)}°C`}
+              value={currentWeather.data.instant.details.air_temperature}
+              unit="°C"
+              width={IMG_WIDTH / 3 - 8}
+            />
+            <WeatherCard
+              title="相對濕度"
+              value={currentWeather.data.instant.details.relative_humidity}
+              unit="%"
+              width={IMG_WIDTH / 3 - 8}
+            />
           </div>
-          <div tw="flex items-center justify-between pt-4">
-            {next24Hours.slice(0, 8).map((hour, index) => (
-              <MiniWeatherCard
-                key={index}
-                time={new Date(hour.time)
-                  .getHours()
-                  .toString()
-                  .padStart(2, "0")}
-                temperature={hour.data.instant.details.air_temperature}
-                symbol={hour.data.next_1_hours?.summary.symbol_code}
-                precipitation={
-                  hour.data.next_1_hours?.details.precipitation_amount
-                }
-              />
-            ))}
+          <div tw="flex-1" />
+          <div
+            tw="flex flex-col items-start"
+            style={{
+              fontFamily: `"DM Sans", "Noto Sans TC"`,
+            }}
+          >
+            <div tw="text-6xl font-bold">{currentTime}</div>
+            <div tw="text-2xl opacity-50">{currentDate}</div>
+          </div>
+          <div tw="absolute bottom-0 right-0 flex justify-center">
+            <img
+              width="288"
+              height="247.5"
+              src="https://skog-einvoice.gnehs.net/djungelskog.png"
+            />
           </div>
         </div>
-      ),
+        <div tw="flex items-center justify-between pt-4">
+          {next24Hours.slice(0, 8).map((hour, index) => (
+            <MiniWeatherCard
+              key={index}
+              time={new Date(hour.time).getHours().toString().padStart(2, "0")}
+              temperature={hour.data.instant.details.air_temperature}
+              symbol={hour.data.next_1_hours?.summary.symbol_code}
+              precipitation={
+                hour.data.next_1_hours?.details.precipitation_amount
+              }
+            />
+          ))}
+        </div>
+      </div>,
       {
         width: IMG_WIDTH,
         height: IMG_HEIGHT,
@@ -134,7 +129,7 @@ export async function GET() {
       },
     );
   } catch (e) {
-    return new ImageResponse(<Error error={e as Error} width={IMG_WIDTH} />, {
+    return ImageResponse(<Error error={e as Error} width={IMG_WIDTH} />, {
       width: IMG_WIDTH,
       height: IMG_HEIGHT,
       //@ts-expect-error loadGoogleFonts is not typed

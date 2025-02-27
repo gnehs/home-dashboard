@@ -39,75 +39,73 @@ export async function GET() {
     const HKDData = ratesData.filter((x) => x.currency === "HKD")[0];
     const AUDData = ratesData.filter((x) => x.currency === "AUD")[0];
 
-    return new ImageResponse(
-      (
+    return ImageResponse(
+      <div
+        tw="flex bg-white text-2xl"
+        lang="zh-TW"
+        style={{
+          width: IMG_WIDTH,
+          height: IMG_HEIGHT,
+        }}
+      >
         <div
-          tw="flex bg-white text-2xl"
-          lang="zh-TW"
+          tw="flex flex-col"
           style={{
-            width: IMG_WIDTH,
+            width: (IMG_WIDTH / 3) * 2,
             height: IMG_HEIGHT,
           }}
         >
-          <div
-            tw="flex flex-col"
-            style={{
-              width: (IMG_WIDTH / 3) * 2,
-              height: IMG_HEIGHT,
-            }}
-          >
-            <div tw="flex flex-col items-center px-2 py-6">
-              <div tw="text-8xl">{currentTime}</div>
-              <div tw="opacity-50">{currentDate}</div>
-            </div>
-            <div tw="flex-1"></div>
-            <div tw="flex justify-center px-2">
-              <img
-                width="384"
-                height="330"
-                src="https://skog-einvoice.gnehs.net/djungelskog.png"
-              />
-            </div>
+          <div tw="flex flex-col items-center px-2 py-6">
+            <div tw="text-8xl">{currentTime}</div>
+            <div tw="opacity-50">{currentDate}</div>
           </div>
-          <div
-            tw="flex flex-col items-center justify-center"
-            style={{
-              width: IMG_WIDTH / 3,
-              height: IMG_HEIGHT,
-            }}
-          >
-            <MiniCurrencyCard currency="AUD" value={AUDData.spotSell} />
-            <MiniCurrencyCard currency="HKD" value={HKDData.spotSell} />
-            <MiniCurrencyCard currency="SGD" value={SGDData.spotSell} />
-            <MiniCurrencyCard currency="EUR" value={EURData.spotSell} />
-            <CurrencyCard
-              title="BTC"
-              subtitle={`${btcData.RAW.BTC.USD.CHANGEPCT24HOUR.toFixed(2)}%`}
-              value={btcData.RAW.BTC.USD.PRICE}
-              unit="USD"
-            />
-            <CurrencyCard
-              title="ETH"
-              subtitle={`${ethData.RAW.ETH.USD.CHANGEPCT24HOUR.toFixed(2)}%`}
-              value={ethData.RAW.ETH.USD.PRICE}
-              unit="USD"
-            />
-            <CurrencyCard
-              title="JPY/TWD"
-              subtitle="台灣銀行賣出"
-              value={JPYData.spotSell}
-              unit="TWD"
-              maximumFractionDigits={4}
-            />
-            <CurrencyCard
-              title="USD/TWD"
-              subtitle="台灣銀行賣出"
-              value={USDData.spotSell}
-              unit="TWD"
+          <div tw="flex-1"></div>
+          <div tw="flex justify-center px-2">
+            <img
+              width="384"
+              height="330"
+              src="https://skog-einvoice.gnehs.net/djungelskog.png"
             />
           </div>
         </div>
-      ),
+        <div
+          tw="flex flex-col items-center justify-center"
+          style={{
+            width: IMG_WIDTH / 3,
+            height: IMG_HEIGHT,
+          }}
+        >
+          <MiniCurrencyCard currency="AUD" value={AUDData.spotSell} />
+          <MiniCurrencyCard currency="HKD" value={HKDData.spotSell} />
+          <MiniCurrencyCard currency="SGD" value={SGDData.spotSell} />
+          <MiniCurrencyCard currency="EUR" value={EURData.spotSell} />
+          <CurrencyCard
+            title="BTC"
+            subtitle={`${btcData.RAW.BTC.USD.CHANGEPCT24HOUR.toFixed(2)}%`}
+            value={btcData.RAW.BTC.USD.PRICE}
+            unit="USD"
+          />
+          <CurrencyCard
+            title="ETH"
+            subtitle={`${ethData.RAW.ETH.USD.CHANGEPCT24HOUR.toFixed(2)}%`}
+            value={ethData.RAW.ETH.USD.PRICE}
+            unit="USD"
+          />
+          <CurrencyCard
+            title="JPY/TWD"
+            subtitle="台灣銀行賣出"
+            value={JPYData.spotSell}
+            unit="TWD"
+            maximumFractionDigits={4}
+          />
+          <CurrencyCard
+            title="USD/TWD"
+            subtitle="台灣銀行賣出"
+            value={USDData.spotSell}
+            unit="TWD"
+          />
+        </div>
+      </div>,
       {
         width: IMG_WIDTH,
         height: IMG_HEIGHT,
@@ -117,7 +115,7 @@ export async function GET() {
       },
     );
   } catch (e) {
-    return new ImageResponse(<Error error={e as Error} width={IMG_WIDTH} />, {
+    return ImageResponse(<Error error={e as Error} width={IMG_WIDTH} />, {
       width: IMG_WIDTH,
       height: IMG_HEIGHT,
       //@ts-expect-error loadGoogleFonts is not typed
