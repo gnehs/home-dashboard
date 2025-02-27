@@ -1,5 +1,5 @@
 import { ImageResponse } from "@/utils/ImageResponse";
-import { loadGoogleFonts } from "@/utils/font";
+import { loadFonts } from "@/utils/font";
 import { HomeAssistant } from "@/utils/homeAssistant";
 import { StepStep } from "@/utils/stepStep";
 import { CryptoCompare } from "@/utils/cryptocompare";
@@ -82,16 +82,16 @@ export async function GET() {
       >
         <div tw="flex w-full items-center justify-between">
           <div tw="flex">
-            <div tw="mr-1 flex rounded-md border-2 border-gray-100 px-2 py-1">
+            <div tw="mr-1 flex rounded-md border-2 border-black/20 px-2 py-1">
               🌡️ {parseFloat(tempState.state).toFixed(1)}
               {tempState.attributes.unit_of_measurement}
             </div>
-            <div tw="mr-1 flex rounded-md border-2 border-gray-100 px-2 py-1">
+            <div tw="mr-1 flex rounded-md border-2 border-black/20 px-2 py-1">
               💧 {parseFloat(humidityState.state).toFixed(0)}
               {humidityState.attributes.unit_of_measurement}
             </div>
             {occupancyState.state === "on" && (
-              <div tw="mr-1 flex rounded-md border-2 border-gray-100 px-2 py-1">
+              <div tw="mr-1 flex rounded-md border-2 border-black/20 px-2 py-1">
                 👤 已偵測
               </div>
             )}
@@ -114,12 +114,15 @@ export async function GET() {
               width="256"
               height="220"
               src="https://skog-einvoice.gnehs.net/djungelskog.png"
+              style={{
+                filter: `contrast(50%)`,
+              }}
             />
           </div>
         </div>
         <div tw="mb-2 flex justify-between">
           {playerState.state === "playing" && (
-            <div tw="mr-2 flex w-[49.5%] items-center rounded-md bg-gray-100 p-2 px-4">
+            <div tw="mr-2 flex w-[49.5%] items-center rounded-md bg-black/10 p-2 px-4">
               <div tw="text-3xl">🎵</div>
               <div tw="ml-4 flex flex-col">
                 <div tw="text-2xl">
@@ -132,7 +135,7 @@ export async function GET() {
             </div>
           )}
           <div
-            tw={`flex items-center justify-between rounded-md bg-gray-100 p-2 px-4 ${playerState.state === "playing" ? "w-[49.5%]" : "w-full"}`}
+            tw={`flex items-center justify-between rounded-md bg-black/10 p-2 px-4 ${playerState.state === "playing" ? "w-[49.5%]" : "w-full"}`}
           >
             <div tw="flex text-3xl">☁️ {weatherState.state}</div>
             <div tw="flex text-2xl">
@@ -142,7 +145,7 @@ export async function GET() {
           </div>
         </div>
         <div tw="flex w-full justify-between">
-          <div tw="flex w-[32.5%] flex-col rounded-md bg-gray-100 p-2 shadow">
+          <div tw="flex w-[32.5%] flex-col rounded-md bg-black/10 p-2 shadow">
             <div tw="flex justify-between">
               <div>勝勝房間</div>
               <div>⚡️</div>
@@ -177,7 +180,7 @@ export async function GET() {
               />
             </div>
           </div>
-          <div tw="flex w-[32.5%] flex-col rounded-md bg-gray-100 p-2 shadow">
+          <div tw="flex w-[32.5%] flex-col rounded-md bg-black/10 p-2 shadow">
             <div tw="flex justify-between">
               <div>BTC</div>
               <div tw="flex">
@@ -203,7 +206,7 @@ export async function GET() {
               <div tw="ml-1 opacity-50">TWD</div>
             </div>
           </div>
-          <div tw="flex w-[32.5%] flex-col rounded-md bg-gray-100 p-2 shadow">
+          <div tw="flex w-[32.5%] flex-col rounded-md bg-black/10 p-2 shadow">
             <div tw="flex justify-between">
               <div>餅餅踏踏</div>
               <div>🚶</div>
@@ -242,7 +245,7 @@ export async function GET() {
         width: IMG_WIDTH,
         height: IMG_HEIGHT,
         //@ts-expect-error loadGoogleFonts is not typed
-        fonts: await loadGoogleFonts(currentTime + currentDate),
+        fonts: await loadFonts(),
         emoji: "blobmoji",
       },
     );
@@ -251,7 +254,7 @@ export async function GET() {
       width: IMG_WIDTH,
       height: IMG_HEIGHT,
       //@ts-expect-error loadGoogleFonts is not typed
-      fonts: await loadGoogleFonts(currentTime + currentDate),
+      fonts: await loadFonts(),
     });
   }
 }

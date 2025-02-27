@@ -101,7 +101,7 @@ function Card({
         <img
           src={url}
           alt={title}
-          className="min-h-[270px] w-full grayscale transition-opacity group-hover:opacity-90"
+          className="min-h-[270px] w-full invert transition-opacity group-hover:opacity-90"
         />
       </div>
       <div className="mt-2 text-xl font-bold text-gray-900">{title}</div>

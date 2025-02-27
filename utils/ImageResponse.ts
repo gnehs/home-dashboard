@@ -1,8 +1,9 @@
 //@ts-nocheck
-import { Transformer } from "@napi-rs/image";
+import { Transformer, compressJpeg } from "@napi-rs/image";
 import { ReactElement } from "react";
 import type { SatoriOptions } from "satori";
 import { ImageResponse as OriginalImageResponse } from "next/og";
+import sharp from "sharp";
 
 export async function ImageResponse(
   element: ReactElement,
@@ -10,13 +11,21 @@ export async function ImageResponse(
 ): Promise<Response> {
   const response = new OriginalImageResponse(element, config);
   const arrayBuffer = await response.arrayBuffer();
-  const transformer = new Transformer(Buffer.from(arrayBuffer));
 
-  const image = await transformer.grayscale().jpeg(80);
+  const image = sharp(arrayBuffer)
+    .flatten({ background: "#fff" })
+    .negate()
+    .grayscale()
+    .jpeg({
+      quality: 90,
+    });
 
-  return new Response(image, {
+  const buffer = await image.toBuffer();
+
+  return new Response(buffer, {
     headers: {
-      "Content-Type": "image/jpg",
+      "Content-Type": "image/jpeg",
+      "Content-Length": buffer.length.toString(),
       "Cache-Control": "public, max-age=0, immutable",
     },
   });

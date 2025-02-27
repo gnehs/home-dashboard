@@ -1,5 +1,5 @@
 import { ImageResponse } from "@/utils/ImageResponse";
-import { loadGoogleFonts } from "@/utils/font";
+import { loadFonts } from "@/utils/font";
 import { BotBank } from "@/utils/bot-bank";
 import { CryptoCompare } from "@/utils/cryptocompare";
 
@@ -110,7 +110,7 @@ export async function GET() {
         width: IMG_WIDTH,
         height: IMG_HEIGHT,
         //@ts-expect-error loadGoogleFonts is not typed
-        fonts: await loadGoogleFonts(currentTime + currentDate),
+        fonts: await loadFonts(currentTime + currentDate),
         emoji: "blobmoji",
       },
     );
@@ -119,7 +119,7 @@ export async function GET() {
       width: IMG_WIDTH,
       height: IMG_HEIGHT,
       //@ts-expect-error loadGoogleFonts is not typed
-      fonts: await loadGoogleFonts(),
+      fonts: await loadFonts(),
       emoji: "twemoji",
     });
   }

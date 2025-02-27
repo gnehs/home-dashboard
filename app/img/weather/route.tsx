@@ -1,5 +1,5 @@
 import { ImageResponse } from "@/utils/ImageResponse";
-import { loadGoogleFonts } from "@/utils/font";
+import { loadFonts } from "@/utils/font";
 import { MetWeather, WeatherStates } from "@/utils/met-weather";
 
 import Error from "@/app/components/Error";
@@ -81,12 +81,7 @@ export async function GET() {
             />
           </div>
           <div tw="flex-1" />
-          <div
-            tw="flex flex-col items-start"
-            style={{
-              fontFamily: `"DM Sans", "Noto Sans TC"`,
-            }}
-          >
+          <div tw="flex flex-col items-start">
             <div tw="text-6xl font-bold">{currentTime}</div>
             <div tw="text-2xl opacity-50">{currentDate}</div>
           </div>
@@ -95,6 +90,9 @@ export async function GET() {
               width="288"
               height="247.5"
               src="https://skog-einvoice.gnehs.net/djungelskog.png"
+              style={{
+                filter: `brightness(150%)`,
+              }}
             />
           </div>
         </div>
@@ -117,7 +115,7 @@ export async function GET() {
         height: IMG_HEIGHT,
         emoji: "twemoji",
         //@ts-expect-error loadGoogleFonts is not typed
-        fonts: await loadGoogleFonts(
+        fonts: await loadFonts(
           currentTime +
             currentDate +
             "1234567890.°C%/ mm" +
@@ -133,7 +131,7 @@ export async function GET() {
       width: IMG_WIDTH,
       height: IMG_HEIGHT,
       //@ts-expect-error loadGoogleFonts is not typed
-      fonts: await loadGoogleFonts(),
+      fonts: await loadFonts(),
       emoji: "twemoji",
     });
   }
@@ -162,13 +160,8 @@ function MiniWeatherCard({
   precipitation?: number;
 }) {
   return (
-    <div
-      tw="flex flex-col items-center justify-center rounded-xl border-2 border-[#E0E1E2]"
-      style={{
-        fontFamily: `"DM Sans", "Noto Sans TC"`,
-      }}
-    >
-      <div tw="w-full items-center justify-center bg-[#E0E1E2] py-1 text-center text-gray-700">
+    <div tw="flex flex-col items-center justify-center rounded-xl border-2 border-[#aaa]">
+      <div tw="w-full items-center justify-center rounded-t-lg bg-[#aaa] py-1 text-center text-white">
         {time}
       </div>
       <div tw="flex flex-col px-4 py-2">
@@ -184,7 +177,7 @@ function MiniWeatherCard({
             <div tw="mr-1">{precipitation.toFixed(1)}</div>
             <div tw="flex text-base opacity-50">mm</div>
           </div>
-        )}{" "}
+        )}
       </div>
     </div>
   );
@@ -220,12 +213,7 @@ function WeatherCard({
           <div>{title}</div>
           <div tw="text-base opacity-50">{subtitle}</div>
         </div>
-        <div
-          tw="flex items-end"
-          style={{
-            fontFamily: `"DM Sans", "Noto Sans TC"`,
-          }}
-        >
+        <div tw="flex items-end">
           <div tw="flex text-4xl font-bold">
             {typeof value === "string"
               ? value
@@ -236,7 +224,7 @@ function WeatherCard({
           <div tw="ml-1 opacity-50">{unit}</div>
         </div>
       </div>
-      <div tw="h-1 w-full rounded-full bg-[#E0E1E2]" />
+      <div tw="h-1 w-full rounded-full bg-[#aaa]" />
     </div>
   );
 }
