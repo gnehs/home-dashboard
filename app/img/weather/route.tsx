@@ -33,7 +33,7 @@ export async function GET() {
 
     return ImageResponse(
       <div
-        tw="flex flex-col bg-gray-50 p-4 text-2xl"
+        tw="flex flex-col p-4 text-2xl"
         lang="zh-TW"
         style={{
           width: IMG_WIDTH,
@@ -160,8 +160,8 @@ function MiniWeatherCard({
   precipitation?: number;
 }) {
   return (
-    <div tw="flex flex-col items-center justify-center rounded-xl border-2 border-[#aaa]">
-      <div tw="w-full items-center justify-center rounded-t-lg bg-[#aaa] py-1 text-center text-white">
+    <div tw="flex flex-col items-center justify-center rounded-xl border-2 border-[#888]">
+      <div tw="w-full items-center justify-center rounded-t-lg bg-[#888] py-1 text-center text-white">
         {time}
       </div>
       <div tw="flex flex-col px-4 py-2">
