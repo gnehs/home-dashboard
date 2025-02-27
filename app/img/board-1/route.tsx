@@ -115,7 +115,7 @@ export async function GET() {
               height="220"
               src="https://skog-einvoice.gnehs.net/djungelskog.png"
               style={{
-                filter: `contrast(50%)`,
+                filter: `brightness(150%)`,
               }}
             />
           </div>
