@@ -1,4 +1,5 @@
-import { ImageResponse } from "next/og";
+import { ImageResponse } from "@/utils/ImageResponse";
+import { loadGoogleFonts } from "@/utils/font";
 import { HomeAssistant } from "@/utils/homeAssistant";
 import { StepStep } from "@/utils/stepStep";
 import { CryptoCompare } from "@/utils/cryptocompare";
@@ -239,12 +240,20 @@ export async function GET() {
           </div>
         </div>
       ),
-      { width: IMG_WIDTH, height: IMG_HEIGHT, emoji: "blobmoji" },
+      {
+        width: IMG_WIDTH,
+        height: IMG_HEIGHT,
+        //@ts-expect-error loadGoogleFonts is not typed
+        fonts: await loadGoogleFonts(currentTime + currentDate),
+        emoji: "blobmoji",
+      },
     );
   } catch (e) {
     return new ImageResponse(<Error error={e as Error} width={IMG_WIDTH} />, {
       width: IMG_WIDTH,
       height: IMG_HEIGHT,
+      //@ts-expect-error loadGoogleFonts is not typed
+      fonts: await loadGoogleFonts(currentTime + currentDate),
     });
   }
 }
