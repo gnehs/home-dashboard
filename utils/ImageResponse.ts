@@ -12,11 +12,11 @@ export async function ImageResponse(
   const arrayBuffer = await response.arrayBuffer();
   const transformer = new Transformer(Buffer.from(arrayBuffer));
 
-  const jpeg = await transformer.jpeg();
+  const image = await transformer.grayscale().jpeg(80);
 
-  return new Response(jpeg, {
+  return new Response(image, {
     headers: {
-      "Content-Type": "image/jpeg",
+      "Content-Type": "image/jpg",
       "Cache-Control": "public, max-age=0, immutable",
     },
   });
