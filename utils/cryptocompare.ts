@@ -105,13 +105,49 @@ const DetailedPriceResponse = z.object({
   })))
 });
 
+interface CacheEntry<T> {
+  data: T;
+  timestamp: number;
+}
+
+class MemoryCache {
+  private cache: Map<string, CacheEntry<any>>;
+  private readonly TTL: number;
+
+  constructor(ttlSeconds: number = 300) { // 預設 5 分鐘
+    this.cache = new Map();
+    this.TTL = ttlSeconds * 1000; // 轉換為毫秒
+  }
+
+  set<T>(key: string, value: T): void {
+    this.cache.set(key, {
+      data: value,
+      timestamp: Date.now()
+    });
+  }
+
+  get<T>(key: string): T | null {
+    const entry = this.cache.get(key);
+    if (!entry) return null;
+
+    const isExpired = Date.now() - entry.timestamp > this.TTL;
+    if (isExpired) {
+      this.cache.delete(key);
+      return null;
+    }
+
+    return entry.data as T;
+  }
+}
 export class CryptoCompare {
   private baseUrl: string;
   private detailedBaseUrl: string;
+  private cache: MemoryCache;
 
   constructor() {
     this.baseUrl = "https://min-api.cryptocompare.com/data/price";
     this.detailedBaseUrl = "https://min-api.cryptocompare.com/data/pricemultifull";
+    this.cache = new MemoryCache(300); // 5 分鐘快取
   }
 
   private async request<T>(
@@ -145,40 +181,58 @@ export class CryptoCompare {
    * Get cryptocurrency price in USD
    * @param symbol Cryptocurrency symbol (e.g., "BTC")
    */
-  async getPrice(symbol: string) {
-    const data = await this.request<z.infer<typeof PriceResponse>>({
-      fsym: symbol,
-      tsyms: "USD",
-    });
-    return PriceResponse.parse(data);
+   async getPrice(symbol: string) {
+     const cacheKey = `price_${symbol}`;
+     const cachedData = this.cache.get<z.infer<typeof PriceResponse>>(cacheKey);
+     
+     if (cachedData) {
+       return cachedData;
+     }
+ 
+     const data = await this.request<z.infer<typeof PriceResponse>>({
+       fsym: symbol,
+       tsyms: "USD",
+     });
+     const parsedData = PriceResponse.parse(data);
+     this.cache.set(cacheKey, parsedData);
+     return parsedData;
   }
 
   /**
    * Get detailed cryptocurrency price information in USD
    * @param symbol Cryptocurrency symbol (e.g., "BTC")
    */
-  async getDetailedPrice(symbol: string) {
-    const url = new URL(this.detailedBaseUrl);
-    url.search = new URLSearchParams({
-      fsyms: symbol,
-      tsyms: "USD",
-      sign: "true",
-      extraParams: "gnehs-home-dashboard",
-    }).toString();
-
-    const response = await fetch(url, {
-      headers: {
-        "Content-Type": "application/json; charset=UTF-8",
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(
-        `CryptoCompare API error: ${response.status} ${response.statusText}`
-      );
-    }
-
-    const data = await response.json();
-    return DetailedPriceResponse.parse(data);
+   async getDetailedPrice(symbol: string) {
+     const cacheKey = `detailed_price_${symbol}`;
+     const cachedData = this.cache.get<z.infer<typeof DetailedPriceResponse>>(cacheKey);
+     
+     if (cachedData) {
+       return cachedData;
+     }
+ 
+     const url = new URL(this.detailedBaseUrl);
+     url.search = new URLSearchParams({
+       fsyms: symbol,
+       tsyms: "USD",
+       sign: "true",
+       extraParams: "gnehs-home-dashboard",
+     }).toString();
+ 
+     const response = await fetch(url, {
+       headers: {
+         "Content-Type": "application/json; charset=UTF-8",
+       },
+     });
+ 
+     if (!response.ok) {
+       throw new Error(
+         `CryptoCompare API error: ${response.status} ${response.statusText}`
+       );
+     }
+ 
+     const data = await response.json();
+     const parsedData = DetailedPriceResponse.parse(data);
+     this.cache.set(cacheKey, parsedData);
+     return parsedData;
   }
 }

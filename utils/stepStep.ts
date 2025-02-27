@@ -1,5 +1,40 @@
 import { z } from "zod";
 
+interface CacheEntry<T> {
+  data: T;
+  timestamp: number;
+}
+
+class MemoryCache {
+  private cache: Map<string, CacheEntry<any>>;
+  private readonly TTL: number;
+
+  constructor(ttlSeconds: number = 600) {
+    // 預設 10 分鐘
+    this.cache = new Map();
+    this.TTL = ttlSeconds * 1000;
+  }
+
+  set<T>(key: string, value: T): void {
+    this.cache.set(key, {
+      data: value,
+      timestamp: Date.now(),
+    });
+  }
+
+  get<T>(key: string): T | null {
+    const entry = this.cache.get(key);
+    if (!entry) return null;
+
+    const isExpired = Date.now() - entry.timestamp > this.TTL;
+    if (isExpired) {
+      this.cache.delete(key);
+      return null;
+    }
+
+    return entry.data as T;
+  }
+}
 // Types for StepStep API responses
 const UserResponse = z.object({
   id: z.string(),
@@ -69,6 +104,7 @@ const AnalyticsResponse = z.object({
 export class StepStep {
   private baseUrl: string;
   private token: string;
+  private cache: MemoryCache;
 
   constructor(baseUrl: string, token: string) {
     if (!baseUrl || !token) {
@@ -80,6 +116,7 @@ export class StepStep {
     // Remove trailing slash if present
     this.baseUrl = baseUrl.replace(/\/$/, "");
     this.token = token;
+    this.cache = new MemoryCache(600); // 10 分鐘快取
   }
 
   private async request<T>(
@@ -111,19 +148,38 @@ export class StepStep {
    * @param date Date in YYYY-MM-DD format
    */
   async getRank(date: string) {
+    const cacheKey = `rank_${date}`;
+    const cachedData = this.cache.get<z.infer<typeof RankResponse>>(cacheKey);
+
+    if (cachedData) {
+      return cachedData;
+    }
+
     const data = await this.request<z.infer<typeof RankResponse>>(
       `/rank?date=${date}`,
     );
-    return RankResponse.parse(data);
+    const parsedData = RankResponse.parse(data);
+    this.cache.set(cacheKey, parsedData);
+    return parsedData;
   }
 
   /**
    * Get analytics data
    */
   async getAnalytics() {
+    const cacheKey = "analytics";
+    const cachedData =
+      this.cache.get<z.infer<typeof AnalyticsResponse>>(cacheKey);
+
+    if (cachedData) {
+      return cachedData;
+    }
+
     const data = await this.request<z.infer<typeof AnalyticsResponse>>(
       `/analytics?token=${this.token}`,
     );
-    return AnalyticsResponse.parse(data);
+    const parsedData = AnalyticsResponse.parse(data);
+    this.cache.set(cacheKey, parsedData);
+    return parsedData;
   }
 }

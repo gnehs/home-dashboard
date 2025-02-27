@@ -32,11 +32,48 @@ const WeatherForecastResponse = z.object({
   }),
 });
 
+interface CacheEntry<T> {
+  data: T;
+  timestamp: number;
+}
+
+class MemoryCache {
+  private cache: Map<string, CacheEntry<any>>;
+  private readonly TTL: number;
+
+  constructor(ttlSeconds: number = 1800) {
+    // 預設 30 分鐘
+    this.cache = new Map();
+    this.TTL = ttlSeconds * 1000;
+  }
+
+  set<T>(key: string, value: T): void {
+    this.cache.set(key, {
+      data: value,
+      timestamp: Date.now(),
+    });
+  }
+
+  get<T>(key: string): T | null {
+    const entry = this.cache.get(key);
+    if (!entry) return null;
+
+    const isExpired = Date.now() - entry.timestamp > this.TTL;
+    if (isExpired) {
+      this.cache.delete(key);
+      return null;
+    }
+
+    return entry.data as T;
+  }
+}
 export class MetWeather {
   private baseUrl: string;
+  private cache: MemoryCache;
 
   constructor() {
     this.baseUrl = "https://api.met.no/weatherapi/locationforecast/2.0/compact";
+    this.cache = new MemoryCache(1800); // 30 分鐘快取
   }
 
   private async request(
@@ -69,8 +106,18 @@ export class MetWeather {
    * @param longitude Longitude of the location
    */
   async getForecast(latitude: number | string, longitude: number | string) {
+    const cacheKey = `forecast_${latitude}_${longitude}`;
+    const cachedData =
+      this.cache.get<z.infer<typeof WeatherForecastResponse>>(cacheKey);
+
+    if (cachedData) {
+      return cachedData;
+    }
+
     const data = await this.request(latitude, longitude);
-    return WeatherForecastResponse.parse(data);
+    const parsedData = WeatherForecastResponse.parse(data);
+    this.cache.set(cacheKey, parsedData);
+    return parsedData;
   }
 }
 export const WeatherStates = {
