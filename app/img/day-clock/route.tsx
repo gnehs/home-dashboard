@@ -20,7 +20,6 @@ export async function GET() {
       day: "numeric",
       weekday: "long",
     });
-    const DAY = 24 * 60;
     const DAY_PASSED = date.getHours() * 60 + date.getMinutes();
 
     return new ImageResponse(
@@ -65,7 +64,8 @@ export async function GET() {
         width: IMG_WIDTH,
         height: IMG_HEIGHT,
         emoji: "twemoji",
-        fonts: (await loadGoogleFonts(currentTime + currentDate)) as any,
+        //@ts-expect-error loadGoogleFonts is not typed
+        fonts: await loadGoogleFonts(currentTime + currentDate),
       },
     );
   } catch (e) {

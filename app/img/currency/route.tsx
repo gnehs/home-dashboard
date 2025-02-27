@@ -147,23 +147,3 @@ export async function GET() {
     });
   }
 }
-
-function MiniCard({
-  title,
-  value,
-  unit,
-}: {
-  title: string;
-  value: number;
-  unit: string;
-}) {
-  return (
-    <div tw="mr-2 flex flex-col rounded bg-white px-3 py-1 shadow">
-      <div tw="flex items-end text-2xl">
-        {value.toLocaleString("zh-TW", { maximumFractionDigits: 1 })}
-        <div tw="ml-1 text-base opacity-50">{unit}</div>
-      </div>
-      <div tw="text-base opacity-50">{title}</div>
-    </div>
-  );
-}

@@ -121,7 +121,9 @@ export async function GET() {
         width: IMG_WIDTH,
         height: IMG_HEIGHT,
         emoji: "twemoji",
-        fonts: (await loadGoogleFonts(
+
+        //@ts-expect-error loadGoogleFonts is not typed
+        fonts: await loadGoogleFonts(
           currentTime +
             currentDate +
             "1234567890.°C%/ mm" +
@@ -129,7 +131,7 @@ export async function GET() {
               currentWeather.data.next_1_hours?.summary
                 .symbol_code as keyof typeof WeatherStates
             ],
-        )) as any,
+        ),
       },
     );
   } catch (e) {
