@@ -137,7 +137,15 @@ export async function GET() {
                   }}
                 />
               ) : (
-                <div tw="text-3xl">🎵</div>
+                <div
+                  tw="text-3xl"
+                  style={{
+                    display: "block",
+                    minWidth: "32px",
+                  }}
+                >
+                  🎵
+                </div>
               )}
               <div tw="flex flex-col pl-4 pr-20">
                 {playerState.attributes.media_title && (
