@@ -4,6 +4,7 @@ import { HomeAssistant } from "@/utils/homeAssistant";
 import { StepStep } from "@/utils/stepStep";
 import { CryptoCompare } from "@/utils/cryptocompare";
 import { BotBank } from "@/utils/bot-bank";
+import { WeatherStates, getWeatherIcon } from "@/utils/met-weather";
 import Error from "@/app/components/Error";
 
 const IMG_WIDTH = 960;
@@ -167,7 +168,12 @@ export async function GET() {
           <div
             tw={`flex items-center justify-between rounded-md bg-black/10 p-2 px-4 ${playerState.state === "playing" ? "w-[49.5%]" : "w-full"}`}
           >
-            <div tw="flex text-3xl">☁️ {weatherState.state}</div>
+            <div tw="flex text-3xl">
+              {getWeatherIcon(weatherState.state)}{" "}
+              {WeatherStates[
+                weatherState.state as keyof typeof WeatherStates
+              ] ?? weatherState.state}
+            </div>
             <div tw="flex text-2xl">
               {weatherState.attributes.temperature}
               {weatherState.attributes.temperature_unit}

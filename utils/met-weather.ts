@@ -122,6 +122,7 @@ export class MetWeather {
 }
 export const WeatherStates = {
   snowshowersandthunder_polartwilight: "極光雷陣雨",
+  clearsky: "晴",
   clearsky_day: "晴",
   clearsky_night: "晴",
   clearsky_polartwilight: "極光",
@@ -178,6 +179,7 @@ export const WeatherStates = {
   lightssnowshowersandthunder_day: "小雪雷擊陣雪白天",
   lightssnowshowersandthunder_night: "小雪雷擊陣雪夜晚",
   lightssnowshowersandthunder_polartwilight: "小雪雷擊陣雪極光",
+  partlycloudy: "多雲",
   partlycloudy_day: "多雲",
   partlycloudy_night: "多雲",
   partlycloudy_polartwilight: "部分多雲極光",
@@ -205,3 +207,14 @@ export const WeatherStates = {
   snowshowersandthunder_day: "雪雷擊陣雪白天",
   snowshowersandthunder_night: "雪雷擊陣雪夜晚",
 };
+
+export function getWeatherIcon(symbol: string) {
+  if (symbol.includes("thunder")) return "⚡️";
+  if (symbol.includes("rain")) return "🌧️";
+  if (symbol.includes("snow")) return "🌨️";
+  if (symbol.includes("fog")) return "🌫️";
+  if (symbol.includes("cloud")) return "☁️";
+  if (symbol.includes("_day")) return "☀️";
+  if (symbol.includes("_night")) return "🌙";
+  return "☁️";
+}

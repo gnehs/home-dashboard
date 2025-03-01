@@ -1,6 +1,6 @@
 import { ImageResponse } from "@/utils/ImageResponse";
 import { loadFonts } from "@/utils/font";
-import { MetWeather, WeatherStates } from "@/utils/met-weather";
+import { MetWeather, WeatherStates, getWeatherIcon } from "@/utils/met-weather";
 
 import Error from "@/app/components/Error";
 
@@ -135,17 +135,6 @@ export async function GET() {
       emoji: "twemoji",
     });
   }
-}
-
-function getWeatherIcon(symbol: string) {
-  if (symbol.includes("thunder")) return "⚡️";
-  if (symbol.includes("rain")) return "🌧️";
-  if (symbol.includes("snow")) return "🌨️";
-  if (symbol.includes("fog")) return "🌫️";
-  if (symbol.includes("cloud")) return "☁️";
-  if (symbol.includes("_day")) return "☀️";
-  if (symbol.includes("_night")) return "🌙";
-  return "☁️";
 }
 
 function MiniWeatherCard({
