@@ -52,7 +52,7 @@ export default function Error({
         </div>
       </div>
 
-      <div tw="flex w-full items-center justify-between border-t border-gray-200 bg-gray-50 p-2 px-6">
+      <div tw="flex w-full items-center justify-between border-t-2 border-black/20 bg-black/10 p-2 px-6">
         <div>Home Dashboard</div>
         <div tw="opacity-50">{date.toLocaleString("zh-TW")}</div>
       </div>
