@@ -122,15 +122,45 @@ export async function GET() {
         </div>
         <div tw="mb-2 flex justify-between">
           {playerState.state === "playing" && (
-            <div tw="mr-2 flex w-[49.5%] items-center rounded-md bg-black/10 p-2 px-4">
-              <div tw="text-3xl">🎵</div>
-              <div tw="ml-4 flex flex-col">
-                <div tw="text-2xl">
-                  {playerState.attributes.media_title.slice(0, 30)}
-                </div>
-                <div tw="opacity-50">
-                  {playerState.attributes.media_artist.slice(0, 30)}
-                </div>
+            <div
+              tw={`mr-2 flex w-[49.5%] items-center rounded-md bg-black/10 p-2 ${
+                playerState.attributes.entity_picture ? "px-2" : "px-4"
+              }`}
+            >
+              {playerState.attributes.entity_picture ? (
+                <img
+                  src={`${process.env.HOME_ASSISTANT_HOST}${playerState.attributes.entity_picture}`}
+                  tw="shirk-0 rounded"
+                  style={{
+                    height: `64px`,
+                  }}
+                />
+              ) : (
+                <div tw="text-3xl">🎵</div>
+              )}
+              <div tw="flex flex-col pl-4 pr-20">
+                {playerState.attributes.media_title && (
+                  <div
+                    tw="truncate text-2xl"
+                    style={{
+                      display: "block",
+                      lineClamp: 2,
+                    }}
+                  >
+                    {playerState.attributes.media_title}
+                  </div>
+                )}
+                {playerState.attributes.media_artist && (
+                  <div
+                    tw="truncate opacity-50"
+                    style={{
+                      display: "block",
+                      lineClamp: 2,
+                    }}
+                  >
+                    {playerState.attributes.media_artist}
+                  </div>
+                )}
               </div>
             </div>
           )}
