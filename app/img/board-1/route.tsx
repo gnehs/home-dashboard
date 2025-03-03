@@ -131,7 +131,7 @@ export async function GET() {
               {playerState.attributes.entity_picture ? (
                 <img
                   src={`${process.env.HOME_ASSISTANT_HOST}${playerState.attributes.entity_picture}`}
-                  tw="shirk-0 rounded"
+                  tw="rounded"
                   style={{
                     height: `64px`,
                   }}
@@ -150,7 +150,7 @@ export async function GET() {
               <div tw="flex flex-col pl-4 pr-20">
                 {playerState.attributes.media_title && (
                   <div
-                    tw="truncate text-2xl"
+                    tw="text-2xl"
                     style={{
                       display: "block",
                       lineClamp: 2,
@@ -161,7 +161,7 @@ export async function GET() {
                 )}
                 {playerState.attributes.media_artist && (
                   <div
-                    tw="truncate opacity-50"
+                    tw="opacity-50"
                     style={{
                       display: "block",
                       lineClamp: 2,
