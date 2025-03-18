@@ -46,13 +46,13 @@ docker run -d --name nocodb-einvoice \
 
 ### 1. 修改 Home Dashboard 程式碼
 
-### 1-1. 修改 `.github/workflows/build.yaml`
+#### 1-1. 修改 `.github/workflows/build.yaml`
 
 這裡已有撰寫好的 GitHub Actions，需要將 Docker 的使用者名稱和映像名稱更改為你的資訊，完成後將會在每次推送時自動建置 Docker 映像
 
 `gnehs/home-dashboard` -> `<yout_username>/<image_name>`
 
-### 1-2. 修改 `app/img/board-1/route.tsx`（選用）
+#### 1-2. 修改 `app/img/board-1/route.tsx`（選用）
 
 若你需要使用「家庭監測面板」這張圖片，需要對其進行修改
 
