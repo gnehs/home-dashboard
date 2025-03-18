@@ -12,13 +12,15 @@ export async function ImageResponse(
   const response = new OriginalImageResponse(element, config);
   const arrayBuffer = await response.arrayBuffer();
 
-  const image = sharp(arrayBuffer)
-    .flatten({ background: "#fff" })
-    .negate()
-    .grayscale()
-    .jpeg({
-      quality: 90,
-    });
+  let image = sharp(arrayBuffer).flatten({ background: "#fff" });
+
+  if (process.env.NEXT_PUBLIC_INVERT_COLOR === "true") {
+    image = image.negate().grayscale();
+  }
+
+  image = image.jpeg({
+    quality: 95,
+  });
 
   const buffer = await image.toBuffer();
 
