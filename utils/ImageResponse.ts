@@ -1,9 +1,8 @@
 //@ts-nocheck
-import { Transformer, compressJpeg } from "@napi-rs/image";
+import { Transformer } from "@napi-rs/image";
 import { ReactElement } from "react";
 import type { SatoriOptions } from "satori";
 import { ImageResponse as OriginalImageResponse } from "next/og";
-import sharp from "sharp";
 
 export async function ImageResponse(
   element: ReactElement,
@@ -12,15 +11,15 @@ export async function ImageResponse(
   const response = new OriginalImageResponse(element, config);
   const arrayBuffer = await response.arrayBuffer();
 
-  let image = sharp(arrayBuffer).flatten({ background: "#fff" });
+  const input = Buffer.from(arrayBuffer);
+
+  let transformer = new Transformer(input);
 
   if (process.env.NEXT_PUBLIC_INVERT_COLOR === "true") {
-    image = image.negate().grayscale();
+    transformer = transformer.invert().grayscale();
   }
 
-  image = image.bmp();
-
-  const buffer = await image.toBuffer();
+  const buffer = await transformer.bmp();
 
   return new Response(buffer, {
     headers: {
