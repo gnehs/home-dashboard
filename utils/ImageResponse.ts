@@ -18,13 +18,13 @@ export async function ImageResponse(
     image = image.negate().grayscale();
   }
 
-  image = image.png();
+  image = image.bmp();
 
   const buffer = await image.toBuffer();
 
   return new Response(buffer, {
     headers: {
-      "Content-Type": "image/png",
+      "Content-Type": "image/bmp",
       "Content-Length": buffer.length.toString(),
       "Cache-Control": "public, max-age=0, immutable",
     },
