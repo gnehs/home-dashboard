@@ -22,7 +22,6 @@ export async function loadFonts(text: string = "") {
   if (cachedFonts) {
     return cachedFonts;
   }
-
   const fonts = await Promise.all([
     {
       name: "IBM Plex Sans TC",
