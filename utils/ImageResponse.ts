@@ -23,7 +23,11 @@ export async function ImageResponse(
   const whitePixels = new Uint8Array(width * height * 4);
   whitePixels.fill(255);
 
-  let composed = Transformer.fromRgbaPixels(whitePixels, width, height).overlay(input, 0, 0);
+  let composed = Transformer.fromRgbaPixels(whitePixels, width, height).overlay(
+    input,
+    0,
+    0,
+  );
 
   if (process.env.NEXT_PUBLIC_INVERT_COLOR === "true") {
     composed = composed.invert().grayscale();
