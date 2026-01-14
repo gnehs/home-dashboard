@@ -13,13 +13,24 @@ export async function ImageResponse(
 
   const input = Buffer.from(arrayBuffer);
 
-  let transformer = new Transformer(input);
+  // Create a source transformer to read metadata
+  const src = new Transformer(input);
+  const meta = await src.metadata();
+  const width = meta.width;
+  const height = meta.height;
+
+  // Create a white background (RGBA) and composite the source onto it
+  const whitePixels = new Uint8Array(width * height * 4);
+  whitePixels.fill(255);
+
+  let composed = Transformer.fromRgbaPixels(whitePixels, width, height).overlay(input, 0, 0);
 
   if (process.env.NEXT_PUBLIC_INVERT_COLOR === "true") {
-    transformer = transformer.invert().grayscale();
+    composed = composed.invert().grayscale();
   }
 
-  const buffer = await transformer.bmp();
+  // Encode as BMP (should be 24-bit RGB after compositing)
+  const buffer = await composed.bmp();
 
   return new Response(buffer, {
     headers: {
