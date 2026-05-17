@@ -62,8 +62,8 @@ export async function GET() {
           <div tw="flex-1"></div>
           <div tw="flex justify-center px-2">
             <img
-              width="384"
-              height="330"
+              width={384}
+              height={330}
               src="https://skog-einvoice.gnehs.net/djungelskog.png"
               style={{
                 filter: `brightness(150%)`,

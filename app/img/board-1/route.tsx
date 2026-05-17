@@ -10,6 +10,15 @@ import Error from "@/app/components/Error";
 const IMG_WIDTH = 960;
 const IMG_HEIGHT = 540;
 
+type HomeAssistantState = Awaited<ReturnType<HomeAssistant["getState"]>>;
+
+function getAttribute(state: HomeAssistantState, key: string): string {
+  const value = state.attributes[key];
+  return typeof value === "string" || typeof value === "number"
+    ? String(value)
+    : "";
+}
+
 export async function GET() {
   try {
     const ha = new HomeAssistant(
@@ -63,6 +72,9 @@ export async function GET() {
     ]);
     const JPYData = ratesData.filter((x) => x.currency === "JPY")[0];
     const last30dByDay = analyticsData.data.last30dByDay;
+    const playerEntityPicture = getAttribute(playerState, "entity_picture");
+    const playerMediaTitle = getAttribute(playerState, "media_title");
+    const playerMediaArtist = getAttribute(playerState, "media_artist");
 
     const greeting =
       date.getHours() < 6
@@ -85,11 +97,11 @@ export async function GET() {
           <div tw="flex">
             <div tw="mr-1 flex rounded-md border-2 border-black/20 px-2 py-1">
               🌡️ {parseFloat(tempState.state).toFixed(1)}
-              {tempState.attributes.unit_of_measurement}
+              {getAttribute(tempState, "unit_of_measurement")}
             </div>
             <div tw="mr-1 flex rounded-md border-2 border-black/20 px-2 py-1">
               💧 {parseFloat(humidityState.state).toFixed(0)}
-              {humidityState.attributes.unit_of_measurement}
+              {getAttribute(humidityState, "unit_of_measurement")}
             </div>
             {occupancyState.state === "on" && (
               <div tw="mr-1 flex rounded-md border-2 border-black/20 px-2 py-1">
@@ -112,8 +124,8 @@ export async function GET() {
           </h2>
           <div tw="flex">
             <img
-              width="256"
-              height="220"
+              width={256}
+              height={220}
               src="https://skog-einvoice.gnehs.net/djungelskog.png"
               style={{
                 filter: `brightness(150%)`,
@@ -125,12 +137,12 @@ export async function GET() {
           {playerState.state === "playing" && (
             <div
               tw={`mr-2 flex w-[49.5%] items-center rounded-md bg-black/10 p-2 ${
-                playerState.attributes.entity_picture ? "px-2" : "px-4"
+                playerEntityPicture ? "px-2" : "px-4"
               }`}
             >
-              {playerState.attributes.entity_picture ? (
+              {playerEntityPicture ? (
                 <img
-                  src={`${process.env.HOME_ASSISTANT_HOST}${playerState.attributes.entity_picture}`}
+                  src={`${process.env.HOME_ASSISTANT_HOST}${playerEntityPicture}`}
                   tw="rounded"
                   style={{
                     height: `64px`,
@@ -148,7 +160,7 @@ export async function GET() {
                 </div>
               )}
               <div tw="flex flex-col pl-4 pr-20">
-                {playerState.attributes.media_title && (
+                {playerMediaTitle && (
                   <div
                     tw="text-2xl"
                     style={{
@@ -156,10 +168,10 @@ export async function GET() {
                       lineClamp: 2,
                     }}
                   >
-                    {playerState.attributes.media_title}
+                    {playerMediaTitle}
                   </div>
                 )}
-                {playerState.attributes.media_artist && (
+                {playerMediaArtist && (
                   <div
                     tw="opacity-50"
                     style={{
@@ -167,7 +179,7 @@ export async function GET() {
                       lineClamp: 2,
                     }}
                   >
-                    {playerState.attributes.media_artist}
+                    {playerMediaArtist}
                   </div>
                 )}
               </div>
@@ -183,8 +195,8 @@ export async function GET() {
               ] ?? weatherState.state}
             </div>
             <div tw="flex text-2xl">
-              {weatherState.attributes.temperature}
-              {weatherState.attributes.temperature_unit}
+              {getAttribute(weatherState, "temperature")}
+              {getAttribute(weatherState, "temperature_unit")}
             </div>
           </div>
         </div>
@@ -202,7 +214,7 @@ export async function GET() {
                     parseFloat(deskPowerState.state)}
                 </div>
                 <div tw="ml-1 flex">
-                  {deskPowerState.attributes.unit_of_measurement}
+                  {getAttribute(deskPowerState, "unit_of_measurement")}
                 </div>
               </div>
             </div>
@@ -210,17 +222,17 @@ export async function GET() {
               <MiniCard
                 title="衣櫃上"
                 value={parseFloat(closetPowerStateUpper.state)}
-                unit={closetPowerStateUpper.attributes.unit_of_measurement}
+                unit={getAttribute(closetPowerStateUpper, "unit_of_measurement")}
               />
               <MiniCard
                 title="衣櫃下"
                 value={parseFloat(closetPowerStateDown.state)}
-                unit={closetPowerStateDown.attributes.unit_of_measurement}
+                unit={getAttribute(closetPowerStateDown, "unit_of_measurement")}
               />
               <MiniCard
                 title="書桌"
                 value={parseFloat(deskPowerState.state)}
-                unit={deskPowerState.attributes.unit_of_measurement}
+                unit={getAttribute(deskPowerState, "unit_of_measurement")}
               />
             </div>
           </div>

@@ -11,7 +11,7 @@ const ServiceResponse = z.array(
 const StateResponse = z.object({
   entity_id: z.string(),
   state: z.string(),
-  attributes: z.record(z.any()),
+  attributes: z.record(z.string(), z.unknown()),
   last_changed: z.string(),
   last_updated: z.string(),
   context: z.object({

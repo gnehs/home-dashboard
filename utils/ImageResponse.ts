@@ -16,8 +16,8 @@ export async function ImageResponse(
   // Create a source transformer to read metadata
   const src = new Transformer(input);
   const meta = await src.metadata();
-  const width = meta.width;
-  const height = meta.height;
+  const width = Number(meta.width);
+  const height = Number(meta.height);
 
   // Create a white background (RGBA) and composite the source onto it
   const whitePixels = new Uint8Array(width * height * 4);
@@ -34,7 +34,7 @@ export async function ImageResponse(
   }
 
   // Encode as JPEG
-  const buffer = await composed.jpeg({ quality: 90 });
+  const buffer = await composed.jpeg(90);
 
   return new Response(buffer, {
     headers: {
