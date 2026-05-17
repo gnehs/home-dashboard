@@ -10,8 +10,8 @@ WORKDIR /app
 
 # Install dependencies based on the preferred package manager
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* pnpm-workspace.yaml* .npmrc* ./
-RUN npm install --global corepack@latest
-RUN corepack enable pnpm && pnpm i --frozen-lockfile
+RUN corepack enable
+RUN pnpm i --frozen-lockfile
 
 
 # Rebuild the source code only when needed
