@@ -24,8 +24,8 @@ COPY . .
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry during the build.
 # ENV NEXT_TELEMETRY_DISABLED=1
-RUN npm install --global corepack@latest
-RUN corepack enable pnpm && pnpm run build
+RUN npm i -g pnpm
+RUN pnpm run build
 
 # Production image, copy all the files and run next
 FROM base AS runner
