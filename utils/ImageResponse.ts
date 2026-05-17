@@ -33,12 +33,12 @@ export async function ImageResponse(
     composed = composed.invert().grayscale();
   }
 
-  // Encode as BMP (should be 24-bit RGB after compositing)
-  const buffer = await composed.bmp();
+  // Encode as JPEG
+  const buffer = await composed.jpeg({ quality: 90 });
 
   return new Response(buffer, {
     headers: {
-      "Content-Type": "image/bmp",
+      "Content-Type": "image/jpeg",
       "Content-Length": buffer.length.toString(),
       "Cache-Control": "public, max-age=0, immutable",
     },
