@@ -29,7 +29,7 @@ export async function ImageResponse(
     0,
   );
 
-  if (process.env.NEXT_PUBLIC_INVERT_COLOR === "true") {
+  if (process.env.NEXT_PUBLIC_INVERT_COLOR == "true") {
     composed = composed.invert().grayscale();
   }
 

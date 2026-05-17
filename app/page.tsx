@@ -5,16 +5,20 @@ export default function Home() {
   return (
     <div className="flex h-[100svh] w-[100vw] flex-col items-center text-gray-900">
       <div className="sticky top-0 z-20 w-full border-b border-gray-200 bg-white/95 p-2 px-4 backdrop-blur">
-        <div className="max-w-2xl">
+        <div className="mx-auto flex max-w-2xl items-center gap-2">
+          <HomeDashboardIcon className="size-8" />
           <div className="text-2xl font-bold tracking-tighter">
             Home Dashboard
           </div>
         </div>
       </div>
       <div className="flex max-w-[514px] flex-col items-center gap-2 py-8">
-        <h1 className="w-full text-left text-2xl font-bold">
-          歡迎來到 <span className="tracking-tighter">Home Dashboard</span>
-        </h1>
+        <div className="flex w-full items-center gap-3">
+          <HomeDashboardIcon className="size-14 shrink-0" />
+          <h1 className="w-full text-left text-2xl font-bold">
+            歡迎來到 <span className="tracking-tighter">Home Dashboard</span>
+          </h1>
+        </div>
         <p className="w-full text-left text-sm text-gray-600">
           當你看到本頁面時，表示這個專案已經成功部署，你可以查看下方範例，或是動手修改程式碼來建立自己的主控板！
         </p>
@@ -70,6 +74,49 @@ export default function Home() {
     </div>
   );
 }
+
+function HomeDashboardIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 64 64"
+      aria-hidden="true"
+      className={className}
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        x="8"
+        y="18"
+        width="48"
+        height="34"
+        rx="6"
+        className="fill-white stroke-gray-900"
+        strokeWidth="3"
+      />
+      <path
+        d="M18 22L32 10L46 22"
+        className="stroke-gray-900"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="3"
+      />
+      <path
+        d="M20 40H30M20 32H26M38 32H44"
+        className="stroke-gray-900"
+        strokeLinecap="round"
+        strokeWidth="3"
+      />
+      <path
+        d="M37 43L41 47L49 37"
+        className="stroke-emerald-500"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="3"
+      />
+    </svg>
+  );
+}
+
 function Card({
   title,
   url,
@@ -84,11 +131,11 @@ function Card({
   const [currentBaseURL, setCurrentBaseURL] = useState<string>("");
   useEffect(() => {
     setCurrentBaseURL(new URL(url, window.location.origin).toString());
-  }, []);
+  }, [url]);
   return (
     <div className="rounded border border-gray-200 p-4">
       <div className="group relative w-[480px] border-2 border-dashed border-gray-200 bg-gray-300">
-        <div className="absolute bottom-2 left-0 right-0 z-10 m-auto h-max w-max origin-bottom scale-0 rounded border border-gray-200 bg-white p-1 px-3 opacity-0 shadow-sm transition-all group-hover:scale-100 group-hover:opacity-100">
+        <div className="absolute right-0 bottom-2 left-0 z-10 m-auto h-max w-max origin-bottom scale-0 rounded border border-gray-200 bg-white p-1 px-3 opacity-0 shadow-sm transition-all group-hover:scale-100 group-hover:opacity-100">
           <a
             href={currentBaseURL}
             target="_blank"
@@ -101,7 +148,7 @@ function Card({
         <img
           src={url}
           alt={title}
-          className={`min-h-[270px] w-full transition-opacity group-hover:opacity-90 ${process.env.NEXT_PUBLIC_INVERT_COLOR === "true" ? "invert" : ""}`}
+          className={`min-h-[270px] w-full transition-opacity group-hover:opacity-90`}
         />
       </div>
       <div className="mt-2 text-xl font-bold text-gray-900">{title}</div>
