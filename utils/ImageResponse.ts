@@ -4,6 +4,40 @@ import { ReactElement } from "react";
 import type { SatoriOptions } from "satori";
 import { ImageResponse as OriginalImageResponse } from "next/og";
 
+function shouldInvertColor(): boolean {
+  return process.env["NEXT_PUBLIC_INVERT_COLOR"] === "true";
+}
+
+async function createInvertedGrayscaleImage(
+  image: Transformer,
+  width: number,
+  height: number,
+): Promise<Transformer> {
+  const sourcePixels = await image.rawPixels();
+  const pixelCount = width * height;
+  const channels = sourcePixels.length / pixelCount;
+  const outputPixels = new Uint8Array(pixelCount * 4);
+
+  for (let pixelIndex = 0; pixelIndex < pixelCount; pixelIndex += 1) {
+    const sourceIndex = pixelIndex * channels;
+    const outputIndex = pixelIndex * 4;
+    const red = sourcePixels[sourceIndex] ?? 0;
+    const green = sourcePixels[sourceIndex + 1] ?? red;
+    const blue = sourcePixels[sourceIndex + 2] ?? red;
+    const alpha = channels >= 4 ? sourcePixels[sourceIndex + 3] : 255;
+    const invertedGray = Math.round(
+      (255 - red) * 0.299 + (255 - green) * 0.587 + (255 - blue) * 0.114,
+    );
+
+    outputPixels[outputIndex] = invertedGray;
+    outputPixels[outputIndex + 1] = invertedGray;
+    outputPixels[outputIndex + 2] = invertedGray;
+    outputPixels[outputIndex + 3] = alpha;
+  }
+
+  return Transformer.fromRgbaPixels(outputPixels, width, height);
+}
+
 export async function ImageResponse(
   element: ReactElement,
   config: SatoriOptions,
@@ -29,8 +63,10 @@ export async function ImageResponse(
     0,
   );
 
-  if (process.env.NEXT_PUBLIC_INVERT_COLOR == "true") {
-    composed = composed.invert().grayscale();
+  const invertColor = shouldInvertColor();
+
+  if (invertColor) {
+    composed = await createInvertedGrayscaleImage(composed, width, height);
   }
 
   // Encode as JPEG
